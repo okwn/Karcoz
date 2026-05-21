@@ -1,0 +1,292 @@
+:root {
+  --kcz-bubble-bg: #141416f0;
+  --kcz-bubble-border: #2a2a2e;
+  --kcz-bubble-text: #e8e8ea;
+  --kcz-bubble-dim: #888890;
+  --kcz-bubble-accent: #00d4aa;
+  --kcz-bubble-radius: 8px;
+  --kcz-font: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+}
+
+.kcz-study-indicator {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--kcz-bubble-bg);
+  border: 1px solid var(--kcz-bubble-accent);
+  border-radius: 20px;
+  color: var(--kcz-bubble-accent);
+  font-family: var(--kcz-font);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0, 212, 170, 0.15);
+  animation: kcz-slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kcz-study-indicator::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--kcz-bubble-accent);
+  box-shadow: 0 0 8px var(--kcz-bubble-accent);
+  animation: kcz-pulse 2s ease-in-out infinite;
+}
+
+@keyframes kcz-slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kcz-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.kcz-selection-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483646;
+  cursor: crosshair;
+}
+
+.kcz-selection-box {
+  position: absolute;
+  border: 2px solid var(--kcz-bubble-accent);
+  background: rgba(0, 212, 170, 0.08);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.kcz-selection-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--kcz-bubble-accent);
+  border: 2px solid #fff;
+  border-radius: 2px;
+}
+
+.kcz-selection-handle--nw { top: -6px; left: -6px; cursor: nw-resize; }
+.kcz-selection-handle--ne { top: -6px; right: -6px; cursor: ne-resize; }
+.kcz-selection-handle--sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+.kcz-selection-handle--se { bottom: -6px; right: -6px; cursor: se-resize; }
+
+.kcz-selection-dimensions {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--kcz-bubble-bg);
+  border: 1px solid var(--kcz-bubble-border);
+  border-radius: 4px;
+  color: var(--kcz-bubble-text);
+  font-family: var(--kcz-font);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.kcz-selection-actions {
+  position: absolute;
+  bottom: -48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.kcz-btn {
+  padding: 6px 12px;
+  background: var(--kcz-bubble-bg);
+  border: 1px solid var(--kcz-bubble-border);
+  border-radius: 4px;
+  color: var(--kcz-bubble-text);
+  font-family: var(--kcz-font);
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.kcz-btn:hover {
+  background: var(--kcz-bubble-border);
+}
+
+.kcz-btn--primary {
+  background: var(--kcz-bubble-accent);
+  border-color: var(--kcz-bubble-accent);
+  color: #000;
+}
+
+.kcz-btn--primary:hover {
+  background: #00e8bb;
+}
+
+.kcz-result-bubble {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483647;
+  width: 320px;
+  background: var(--kcz-bubble-bg);
+  border: 1px solid var(--kcz-bubble-border);
+  border-radius: var(--kcz-bubble-radius);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: kcz-bubbleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes kcz-bubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.kcz-bubble__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--kcz-bubble-border);
+}
+
+.kcz-bubble__title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--kcz-bubble-accent);
+}
+
+.kcz-bubble__confidence {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--kcz-bubble-dim);
+}
+
+.kcz-bubble__confidence-bar {
+  width: 40px;
+  height: 4px;
+  background: var(--kcz-bubble-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.kcz-bubble__confidence-fill {
+  height: 100%;
+  background: var(--kcz-bubble-accent);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.kcz-bubble__answer {
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--kcz-bubble-text);
+  border-bottom: 1px solid var(--kcz-bubble-border);
+}
+
+.kcz-bubble__actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.kcz-bubble__actions .kcz-btn {
+  flex: 1;
+  text-align: center;
+}
+
+.kcz-loading-bubble {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.kcz-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--kcz-bubble-border);
+  border-top-color: var(--kcz-bubble-accent);
+  border-radius: 50%;
+  animation: kcz-spin 0.8s linear infinite;
+}
+
+@keyframes kcz-spin {
+  to { transform: rotate(360deg); }
+}
+
+.kcz-loading-text {
+  font-size: 12px;
+  color: var(--kcz-bubble-text);
+}
+
+.kcz-page-scan-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2147483646;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 48px;
+  background: var(--kcz-bubble-bg);
+  border: 1px solid var(--kcz-bubble-border);
+  border-radius: var(--kcz-bubble-radius);
+  backdrop-filter: blur(16px);
+  animation: kcz-scanIn 0.3s ease;
+}
+
+@keyframes kcz-scanIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+.kcz-scan-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--kcz-bubble-accent);
+  animation: kcz-scanPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes kcz-scanPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.kcz-scan-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--kcz-bubble-text);
+}

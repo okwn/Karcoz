@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — KARÇÖZ</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; width: 100%; max-width: 380px; }
+    .login-card__logo { font-size: 18px; font-weight: 700; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; text-align: center; margin-bottom: 8px; }
+    .login-card__subtitle { font-size: 11px; color: var(--dim); text-align: center; margin-bottom: 32px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 12px; outline: none; transition: border-color 0.15s; }
+    .form-input:focus { border-color: var(--accent); }
+    .form-input::placeholder { color: var(--dim); }
+    .form-error { padding: 12px; background: #ff475711; border: 1px solid var(--danger); border-radius: var(--radius); color: var(--danger); font-size: 11px; margin-bottom: 16px; display: none; }
+    .form-error--visible { display: block; }
+    .form-actions { margin-top: 24px; }
+    .form-submit { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: var(--radius); color: #000; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .form-submit:hover { background: #00e8bb; }
+    .form-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .form-toggle { margin-top: 20px; text-align: center; font-size: 11px; color: var(--dim); }
+    .form-toggle__link { color: var(--accent); cursor: pointer; }
+    .form-toggle__link:hover { text-decoration: underline; }
+    .success-card { text-align: center; }
+    .success-card--extension { text-align: center; }
+    .success-icon { width: 48px; height: 48px; background: var(--accent-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .success-icon::after { content: ''; width: 20px; height: 20px; border: 2px solid var(--accent); border-top: none; border-right: none; transform: rotate(-45deg); }
+    .success-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .success-desc { font-size: 11px; color: var(--dim); margin-bottom: 24px; }
+    .success-email { color: var(--accent); font-weight: 600; }
+    .extension-token-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin: 16px 0; font-family: monospace; font-size: 11px; word-break: break-all; color: var(--text); }
+    .copy-btn { width: 100%; padding: 10px; background: transparent; border: 1px solid var(--accent); border-radius: var(--radius); color: var(--accent); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .copy-btn:hover { background: var(--accent); color: #000; }
+    .copy-btn--copied { background: var(--accent); color: #000; }
+    .extension-note { font-size: 10px; color: var(--dim); text-align: center; margin-top: 12px; line-height: 1.5; }
+    .extension-steps { text-align: left; margin: 16px 0; padding: 12px; background: var(--bg); border-radius: var(--radius); font-size: 11px; color: var(--dim); }
+    .extension-steps li { margin: 6px 0; padding-left: 4px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="login-card__logo">KARÇÖZ</div>
+    <div class="login-card__subtitle">Magic Link Authentication</div>
+
+    <div id="error" class="form-error"></div>
+
+    <form id="form" class="form">
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" class="form-input" placeholder="you@example.com" required autocomplete="email">
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="form-submit" id="submit-btn">Send Magic Link</button>
+      </div>
+      <div class="form-toggle">
+        <span id="toggle-text">Don't have an account?</span>
+        <span class="form-toggle__link" id="toggle-btn">Create one</span>
+      </div>
+    </form>
+
+    <div id="success" class="success-card hidden">
+      <div class="success-icon"></div>
+      <div class="success-title">Check your email</div>
+      <div class="success-desc">We sent a magic link to <span class="success-email" id="sent-email"></span></div>
+      <button type="button" class="form-submit" onclick="resetForm()">Send another</button>
+    </div>
+
+    <div id="extension-success" class="success-card--extension hidden">
+      <div class="success-icon"></div>
+      <div class="success-title">Extension connected!</div>
+      <div class="success-desc">Your extension token is ready. Copy it below and paste it in the extension settings.</div>
+      <div class="extension-steps">
+        <ol>
+          <li>Open KARÇÖZ extension settings</li>
+          <li>Paste the token below in the "Extension Token" field</li>
+          <li>Click "Save" to activate</li>
+        </ol>
+      </div>
+      <div class="extension-token-box" id="extension-token"></div>
+      <button type="button" class="copy-btn" id="copy-token-btn">Copy Token</button>
+      <div class="extension-note">This token is stored locally in your browser. It expires in 1 year.</div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8100/api';
+    let mode = 'login'; // 'login' or 'register'
+    let isExtensionMode = false;
+    let extensionToken = '';
+
+    const form = document.getElementById('form');
+    const successEl = document.getElementById('success');
+    const extensionSuccessEl = document.getElementById('extension-success');
+    const errorEl = document.getElementById('error');
+    const emailInput = document.getElementById('email');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleText = document.getElementById('toggle-text');
+    const toggleBtn = document.getElementById('toggle-btn');
+    const sentEmail = document.getElementById('sent-email');
+    const copyTokenBtn = document.getElementById('copy-token-btn');
+    const tokenBox = document.getElementById('extension-token');
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.classList.add('form-error--visible');
+    }
+
+    function hideError() {
+      errorEl.classList.remove('form-error--visible');
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitBtn.textContent = loading ? 'Sending...' : (mode === 'login' ? 'Send Magic Link' : 'Create Account');
+    }
+
+    function toggleMode() {
+      mode = mode === 'login' ? 'register' : 'login';
+      toggleText.textContent = mode === 'login' ? "Don't have an account?" : "Already have an account?";
+      toggleBtn.textContent = mode === 'login' ? 'Create one' : 'Sign in';
+      submitBtn.textContent = mode === 'login' ? 'Send Magic Link' : 'Create Account';
+      hideError();
+    }
+
+    function resetForm() {
+      form.classList.remove('hidden');
+      successEl.classList.add('hidden');
+      extensionSuccessEl.classList.add('hidden');
+      emailInput.value = '';
+      hideError();
+    }
+
+    async function copyToken() {
+      try {
+        await navigator.clipboard.writeText(extensionToken);
+        copyTokenBtn.textContent = 'Copied!';
+        copyTokenBtn.classList.add('copy-btn--copied');
+        setTimeout(() => {
+          copyTokenBtn.textContent = 'Copy Token';
+          copyTokenBtn.classList.remove('copy-btn--copied');
+        }, 2000);
+      } catch {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = extensionToken;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyTokenBtn.textContent = 'Copied!';
+        copyTokenBtn.classList.add('copy-btn--copied');
+        setTimeout(() => {
+          copyTokenBtn.textContent = 'Copy Token';
+          copyTokenBtn.classList.remove('copy-btn--copied');
+        }, 2000);
+      }
+    }
+
+    copyTokenBtn?.addEventListener('click', copyToken);
+
+    toggleBtn.addEventListener('click', toggleMode);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+      const email = emailInput.value.trim();
+      if (!email) { showError('Please enter your email address.'); return; }
+
+      setLoading(true);
+      try {
+        const res = await fetch(`${API}/auth/magic-link`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, type: mode })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error?.message || data.message || `Request failed (${res.status})`);
+
+        // Show success state
+        sentEmail.textContent = email;
+        form.classList.add('hidden');
+        successEl.classList.remove('hidden');
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // Auto-verify token from URL if present
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('token');
+    const extParam = params.get('extension');
+    isExtensionMode = extParam === 'true';
+
+    if (isExtensionMode) {
+      document.querySelector('.login-card__subtitle').textContent = 'Connect KARÇÖZ Extension';
+      document.querySelector('.form-toggle').style.display = 'none';
+    }
+
+    if (urlToken) {
+      document.getElementById('form').style.display = 'none';
+      document.querySelector('.login-card__subtitle').textContent = isExtensionMode ? 'Connecting extension...' : 'Verifying your link...';
+      (async () => {
+        try {
+          const res = await fetch(`${API}/auth/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: urlToken })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error?.message || data.message || `Verification failed (${res.status})`);
+
+          // Store session token locally
+          if (data.token) localStorage.setItem('auth_token', data.token);
+
+          if (isExtensionMode) {
+            // Create extension token
+            const extRes = await fetch(`${API}/auth/extension/token`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${data.token}`
+              },
+              body: JSON.stringify({ deviceName: 'Chrome Extension' })
+            });
+            const extData = await extRes.json();
+            if (!extRes.ok) throw new Error(extData.error?.message || extData.message || 'Failed to create extension token');
+
+            extensionToken = extData.token;
+            tokenBox.textContent = extensionToken;
+            form.classList.add('hidden');
+            successEl.classList.add('hidden');
+            extensionSuccessEl.classList.remove('hidden');
+          } else {
+            window.location.href = '/dashboard';
+          }
+        } catch (err) {
+          document.querySelector('.login-card__subtitle').textContent = '';
+          document.getElementById('error').textContent = err.message;
+          document.getElementById('error').classList.add('form-error--visible');
+          document.getElementById('form').style.display = 'block';
+        }
+      })();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "id": "tr-math-basic-001",
+  "questionText": "Bir sınıftaki 30 öğrencinin %60'ı kız öğrencidir. Bu sınıfta kaç kız öğrenci vardır?",
+  "options": [
+    { "label": "A) 12", "value": "12", "order": 0 },
+    { "label": "B) 15", "value": "15", "order": 1 },
+    { "label": "C) 18", "value": "18", "order": 2 },
+    { "label": "D) 20", "value": "20", "order": 3 }
+  ],
+  "correctAnswer": "C) 18",
+  "explanation": "%60'ı hesaplamak için 30 × 60/100 = 18. Yani 18 kız öğrenci vardır.",
+  "difficulty": "easy",
+  "topic": "Yüzde Hesapları",
+  "language": "tr"
+}

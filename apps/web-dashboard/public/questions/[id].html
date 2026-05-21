@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question — KARÇÖZ</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__logo">KARÇÖZ</div>
+    <div class="nav__links">
+      <a href="/dashboard" class="nav__link">Dashboard</a>
+      <a href="/history" class="nav__link">History</a>
+      <a href="/weak-topics" class="nav__link">Weak Topics</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div id="loading" class="loading"><div class="loading__spinner"></div><span>Loading...</span></div>
+    <div id="error" class="error" style="display:none"><p id="error-msg"></p></div>
+    <div id="content" style="display:none" class="question-detail">
+      <a href="/history" class="btn" style="margin-bottom:20px">← Back</a>
+      <div id="question-meta" class="question-detail__meta"></div>
+      <div id="question-body"></div>
+      <div id="question-actions" class="question-detail__actions"></div>
+    </div>
+  </main>
+
+  <script src="/js/api-client.js"></script>
+  <script>
+    const id = window.location.pathname.split('/questions/').pop();
+
+    async function loadQuestion() {
+      if (!await window.KARCOZ.requireAuth()) return;
+      try {
+        const q = await window.KARCOZ.getQuestion(id);
+        window._q = q;
+        render(q);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error-msg').textContent = err.message;
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    function render(q) {
+      const conf = q.confidenceScore ? Math.round(q.confidenceScore * 100) : 0;
+      const confClass = conf < 60 ? 'badge--warn' : conf < 80 ? 'badge--mid' : 'badge--ok';
+
+      document.getElementById('question-meta').innerHTML = `
+        <span class="sp-badge ${confClass}">${conf}%</span>
+        <span class="sp-badge">${window.KARCOZ.escapeHtml(q.topic ?? 'uncategorized')}</span>
+        <span class="sp-badge">${window.KARCOZ.escapeHtml(q.questionType ?? '—')}</span>
+        <span class="sp-badge">${formatTime(q.createdAt)}</span>
+      `;
+
+      let body = '';
+      if (q.extractedText) body += `<div class="question-detail__section"><div class="question-detail__section-title">Question</div><div class="question-detail__section-body">${window.KARCOZ.escapeHtml(q.extractedText)}</div></div>`;
+      if (q.shortAnswer) body += `<div class="question-detail__section"><div class="question-detail__section-title">Answer</div><div class="question-detail__answer">${window.KARCOZ.escapeHtml(q.shortAnswer)}</div></div>`;
+      if (q.fullExplanation) body += `<div class="question-detail__section"><div class="question-detail__section-title">Explanation</div><div class="question-detail__section-body">${window.KARCOZ.escapeHtml(q.fullExplanation)}</div></div>`;
+      if (q.saves?.length) body += `<div class="question-detail__section"><div class="question-detail__section-title">Notes</div><div class="question-detail__section-body">${q.saves.map(s => `<p style="margin-bottom:8px">${window.KARCOZ.escapeHtml(s.notes ?? '')}</p><div style="display:flex;gap:6px;flex-wrap:wrap">${s.tags.map(t => `<span class="sp-badge sp-badge--ok">${window.KARCOZ.escapeHtml(t)}</span>`).join('')}</div>`).join('')}</div></div>`;
+
+      document.getElementById('question-body').innerHTML = body;
+      document.getElementById('question-actions').innerHTML = `<button class="btn btn--primary" id="copy-btn">Copy Answer</button><button class="btn" onclick="window.close()">Close</button>`;
+      document.getElementById('copy-btn').addEventListener('click', () => { if (q.shortAnswer) navigator.clipboard.writeText(q.shortAnswer); });
+    }
+
+    function formatTime(ts) { return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+    loadQuestion();
+  </script>
+</body>
+</html>

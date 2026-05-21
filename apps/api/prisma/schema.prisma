@@ -1,0 +1,276 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String?  @unique
+  role            String   @default("user") // "user" | "admin"
+  plan            String   @default("free") // "free" | "pro" | "team"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  questions       Question[]
+  usage           UsageRecord[]
+  usageEvents     UsageEvent[]
+  subscriptions   Subscription[]
+  telegramAccounts TelegramAccount[]
+  settings        UserSettings?
+  sessions        Session[]
+  authTokens      AuthToken[]
+  extensionTokens ExtensionToken[]
+}
+
+model Question {
+  id             String    @id @default(cuid())
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id])
+  sourceUrl      String?
+  pageTitle      String?
+  sourceType     String
+  extractedText  String
+  normalizedText String
+  questionType   String
+  topic          String?
+  options        Json?
+  shortAnswer    String?
+  selectedOption Int?
+  fullExplanation String?
+  confidenceScore Float?
+  questionHash    String?
+  status         String    @default("pending")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  saves          QuestionSave[]
+  auditLogs      AuditLog[]
+
+  @@index([questionHash])
+}
+
+model QuestionSave {
+  id          String   @id @default(cuid())
+  questionId  String
+  question    Question @relation(fields: [questionId], references: [id])
+  selectedOption Int?
+  notes       String?
+  tags        String[]
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  questionId String?
+  question   Question? @relation(fields: [questionId], references: [id])
+  action     String
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+}
+
+model UsageRecord {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  endpoint  String
+  count     Int      @default(1)
+  period    String
+  createdAt DateTime @default(now())
+
+  @@index([userId, period])
+}
+
+model UsageEvent {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  eventType   String   // "solve", "solve_image", "practice_generate", "telegram_message"
+  count       Int      @default(1)
+  period      String   // "daily" | "monthly"
+  createdAt   DateTime @default(now())
+
+  @@index([userId, period, eventType])
+  @@index([createdAt])
+}
+
+model Subscription {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
+  plan              String   // "free" | "pro" | "team"
+  status            String   // "active" | "canceled" | "past_due"
+  provider          String   // "stripe" | "paddle" | "manual"
+  providerSubId     String?  // external subscription ID
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  canceledAt        DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+  @@index([providerSubId])
+}
+
+model RateLimitConfig {
+  id        String   @id @default(cuid())
+  tier      String   @unique
+  minute    Int
+  daily     Int
+  monthly   Int
+  updatedAt DateTime @updatedAt
+}
+
+model PracticeSet {
+  id                String   @id @default(cuid())
+  topic             String
+  subtopic          String?
+  difficulty        String   @default("medium")
+  language          String   @default("en")
+  basedOnQuestionId String?
+  createdAt         DateTime @default(now())
+  questions         PracticeQuestion[]
+  attempts          PracticeAttempt[]
+}
+
+model PracticeQuestion {
+  id              String      @id @default(cuid())
+  practiceSetId   String
+  practiceSet     PracticeSet @relation(fields: [practiceSetId], references: [id], onDelete: Cascade)
+  questionText    String
+  options         Json?
+  correctAnswer   String
+  explanation     String?
+  difficulty      String      @default("medium")
+  topic           String?
+  orderIndex      Int         @default(0)
+  createdAt       DateTime    @default(now())
+}
+
+model PracticeAttempt {
+  id            String      @id @default(cuid())
+  practiceSetId String
+  practiceSet   PracticeSet @relation(fields: [practiceSetId], references: [id], onDelete: Cascade)
+  userId        String?
+  answers       Json
+  score         Float
+  totalQuestions Int
+  completedAt   DateTime    @default(now())
+  timeSpentMs   Int?
+}
+
+model TelegramAccount {
+  id                String   @id @default(cuid())
+  userId            String?  @unique
+  user              User?    @relation(fields: [userId], references: [id])
+  telegramChatId    String   @unique
+  telegramUsername  String?
+  displayName       String?
+  isLinked          Boolean  @default(true)
+  linkedAt          DateTime @default(now())
+  unlinkedAt        DateTime?
+  lastActivityAt    DateTime @default(now())
+  createdAt         DateTime @default(now())
+  auditLogs         TelegramAuditLog[]
+}
+
+model TelegramAuditLog {
+  id               String   @id @default(cuid())
+  telegramAccountId String?
+  telegramAccount  TelegramAccount? @relation(fields: [telegramAccountId], references: [id])
+  action           String
+  details          Json?
+  ipAddress        String?
+  userAgent        String?
+  telegramChatId   String?
+  createdAt        DateTime @default(now())
+}
+
+model UserSettings {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  storeHistory            Boolean  @default(true)
+  storeImages             Boolean  @default(true)
+  maxHistoryItems         Int      @default(50)
+
+  explanationLevel        String   @default("standard")
+  resultMode              String   @default("full")
+
+  telegramEnabled         Boolean  @default(false)
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  expiresAt   DateTime
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+model AuthToken {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  type      String
+  expiresAt DateTime
+  usedAt    DateTime?
+  email     String
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
+}
+
+model ExtensionToken {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  deviceName  String?
+  lastUsedAt  DateTime?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+model ModelConfig {
+  id               String   @id @default("default")
+  provider         String   @default("mock")
+  modelName        String?
+  fallbackModel    String?
+  timeoutMs        Int      @default(30000)
+  maxTokens        Int      @default(2048)
+  enableValidation Boolean  @default(true)
+  compactMode      Boolean  @default(false)
+  updatedAt        DateTime @updatedAt
+}
+
+model AdminAuditLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  action    String
+  target    String
+  changes   Json?
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([createdAt])
+}

@@ -1,0 +1,10 @@
+{
+  "id": "tlogic_001",
+  "language": "tr",
+  "topic": "mantik",
+  "difficulty": "kolay",
+  "questionText": "Tüm kediler miyavlar. Minnoş bir kedi midir? Minnoş miyavlar. Bu bir mantık sorusudur.",
+  "options": ["Evet", "Hayır", "Belirsiz", "İlgisiz"],
+  "correctAnswer": "A",
+  "expectedNormalizedText": "Tüm kediler miyavlar. Minnoş bir kedi midir? Minnoş miyavlar. Bu bir mantık sorusudur."
+}

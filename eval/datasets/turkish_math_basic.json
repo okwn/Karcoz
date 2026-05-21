@@ -1,0 +1,10 @@
+{
+  "id": "tmath_001",
+  "language": "tr",
+  "topic": "temel_aritmetik",
+  "difficulty": "kolay",
+  "questionText": "3x + 7 = 22 denkleminin çözümü nedir?",
+  "options": ["x = 3", "x = 5", "x = 7", "x = 15"],
+  "correctAnswer": "B",
+  "expectedNormalizedText": "3x + 7 = 22 denkleminin çözümü nedir?"
+}

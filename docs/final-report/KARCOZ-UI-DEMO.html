@@ -1,0 +1,2953 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARÇÖZ — Extension UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Atkinson+Hyperlegible:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0b0e'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='18' font-family='system-ui' font-weight='700' fill='%2300d4ff'>K</text></svg>">
+  <style>
+/*** ============================================
+    KARÇÖZ — Carbon Instrument Design System
+    ============================================ ***/
+
+/* ── CSS Variables ── */
+:root {
+  /* Dark theme (default) */
+  --bg-void:        #0a0b0e;
+  --bg-surface:     #12141a;
+  --bg-elevated:    #1a1d26;
+  --bg-glass:       rgba(26, 29, 38, 0.80);
+  --border-subtle:  #2a2e3a;
+  --border-active:  #3d4255;
+  --border-focus:   rgba(0, 212, 255, 0.5);
+
+  --text-primary:   #eef0f4;
+  --text-secondary: #8b90a0;
+  --text-muted:     #555a6e;
+  --text-inverse:   #0a0b0e;
+
+  --accent-cyan:     #00d4ff;
+  --accent-cyan-dim: #00a8cc;
+  --accent-cyan-glow: rgba(0, 212, 255, 0.15);
+  --accent-emerald:  #00e5a0;
+  --accent-emerald-dim: #00a868;
+  --accent-amber:    #ffb340;
+  --accent-red:      #ff4757;
+  --accent-red-dim:  #cc3a47;
+
+  --glass-overlay:   rgba(10, 11, 14, 0.55);
+  --glass-border:   rgba(0, 212, 255, 0.12);
+  --shadow-bubble:   0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px var(--glass-border);
+
+  --font-display: 'DM Sans', system-ui, sans-serif;
+  --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --text-2xs: 0.6rem;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --transition-fast: 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 280ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  --popup-width: 320px;
+  --popup-height: 440px;
+  --bubble-width: 280px;
+  --drawer-width: 360px;
+  --indicator-height: 36px;
+}
+
+[data-theme="light"] {
+  --bg-void:        #f0f2f5;
+  --bg-surface:     #ffffff;
+  --bg-elevated:    #eef0f4;
+  --bg-glass:       rgba(255, 255, 255, 0.85);
+  --border-subtle:  #dce0e8;
+  --border-active:  #c4c9d4;
+  --border-focus:   rgba(0, 136, 179, 0.5);
+
+  --text-primary:    #0a0b0e;
+  --text-secondary: #555a6e;
+  --text-muted:     #8b90a0;
+
+  --accent-cyan:    #0088b3;
+  --accent-cyan-dim: #006688;
+  --accent-cyan-glow: rgba(0, 136, 179, 0.12);
+  --accent-emerald: #00a868;
+  --accent-amber:   #e08a00;
+  --accent-red:     #d63035;
+
+  --glass-border:   rgba(0, 136, 179, 0.15);
+  --shadow-bubble:   0 8px 32px rgba(0,0,0,0.15), 0 0 0 1px var(--glass-border);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: var(--bg-void);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.018;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::selection {
+  background: var(--accent-cyan);
+  color: var(--text-inverse);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Typography ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.mono { font-family: var(--font-mono); }
+
+/* ── Utilities ── */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.flex-1 { flex: 1; }
+.w-full { width: 100%; }
+.text-center { text-align: center; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  text-decoration: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+
+.btn-primary {
+  background: var(--accent-cyan);
+  color: var(--text-inverse);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-md);
+  font-weight: 600;
+  min-height: 44px;
+  border-radius: var(--radius);
+}
+
+.btn-primary:hover { background: var(--accent-cyan-dim); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  min-height: 36px;
+}
+
+.btn-secondary:hover {
+  background: var(--border-subtle);
+  border-color: var(--border-active);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: var(--space-2);
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--accent-red);
+  border: 1px solid var(--accent-red);
+  min-height: 36px;
+}
+
+.btn-danger:hover {
+  background: var(--accent-red);
+  color: var(--text-primary);
+}
+
+.btn-icon {
+  padding: var(--space-2);
+  min-height: 32px;
+  min-width: 32px;
+}
+
+/* ── Icon Buttons (inline SVG) ── */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+/* ── Toggle ── */
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--border-active);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.toggle input:checked + .toggle-track { background: var(--accent-cyan); }
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.toggle input:checked + .toggle-track::after { transform: translateX(18px); }
+
+/* ── Status Indicator ── */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot.ready { background: var(--accent-emerald); }
+.status-dot.reading { background: var(--accent-amber); animation: pulse 1.2s ease-in-out infinite; }
+.status-dot.solving { background: var(--accent-cyan); animation: pulse 0.8s ease-in-out infinite; }
+.status-dot.error { background: var(--accent-red); }
+.status-dot.low { background: var(--accent-red); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ── Confidence Ring Badge ── */
+.conf-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.conf-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.25;
+}
+
+.conf-ring.high { color: var(--accent-emerald); }
+.conf-ring.good { color: var(--accent-cyan); }
+.conf-ring.medium { color: var(--accent-amber); }
+.conf-ring.low { color: var(--accent-red); }
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.badge-emerald { background: rgba(0,229,160,0.12); color: var(--accent-emerald); border: 1px solid rgba(0,229,160,0.2); }
+.badge-cyan { background: rgba(0,212,255,0.12); color: var(--accent-cyan); border: 1px solid rgba(0,212,255,0.2); }
+.badge-amber { background: rgba(255,179,64,0.12); color: var(--accent-amber); border: 1px solid rgba(255,179,64,0.2); }
+.badge-red { background: rgba(255,71,87,0.12); color: var(--accent-red); border: 1px solid rgba(255,71,87,0.2); }
+.badge-muted { background: var(--bg-elevated); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--space-3) 0;
+}
+
+/* ── Section Label ── */
+.section-label {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: var(--space-1) 0;
+}
+
+/* ===========================================
+   SCREEN 1: POPUP
+   =========================================== */
+.screen-popup {
+  width: var(--popup-width);
+  height: var(--popup-height);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-void);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+.popup-logo {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.popup-logo-mark {
+  width: 22px;
+  height: 22px;
+  background: var(--accent-cyan);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-inverse);
+}
+
+.popup-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.popup-status-label {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.popup-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-cta {
+  padding: var(--space-4);
+  flex-shrink: 0;
+}
+
+.btn-capture {
+  width: 100%;
+  background: var(--accent-cyan);
+  color: var(--text-inverse);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  padding: var(--space-4);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+  min-height: 52px;
+}
+
+.btn-capture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+
+.btn-capture:hover { background: var(--accent-cyan-dim); transform: translateY(-1px); }
+.btn-capture:active { transform: translateY(0) scale(0.99); }
+.btn-capture:active::before { opacity: 0; }
+
+.btn-capture .btn-icon-graphic {
+  width: 20px;
+  height: 20px;
+  opacity: 0.9;
+}
+
+.btn-capture-label {
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.btn-capture-sub {
+  font-size: var(--text-xs);
+  font-weight: 400;
+  opacity: 0.75;
+  display: block;
+  margin-top: 1px;
+}
+
+.popup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) var(--space-3);
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-2);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.action-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-active);
+  color: var(--text-primary);
+}
+
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.action-btn:hover svg { opacity: 1; }
+
+.popup-divider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+
+.study-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.study-toggle-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.study-toggle-label svg { width: 14px; height: 14px; color: var(--accent-emerald); }
+
+.popup-result-preview {
+  margin: 0 var(--space-4) var(--space-3);
+  padding: var(--space-3);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.popup-result-preview:hover {
+  border-color: var(--border-active);
+  background: var(--bg-elevated);
+}
+
+.result-preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.result-preview-text {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.result-preview-answer {
+  font-size: var(--text-sm);
+  color: var(--accent-cyan);
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.popup-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  color: var(--text-muted);
+  text-align: center;
+  gap: var(--space-2);
+}
+
+.popup-empty-state svg { width: 28px; height: 28px; opacity: 0.4; }
+.popup-empty-state p { font-size: var(--text-xs); }
+
+.popup-footer {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.popup-footer-version {
+  font-size: var(--text-2xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.popup-footer-upgrade {
+  font-size: var(--text-xs);
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.popup-footer-upgrade:hover { text-decoration: underline; }
+
+/* ===========================================
+   SCREEN 2: STUDY SCAN MODE INDICATOR
+   =========================================== */
+.study-indicator {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.study-indicator:hover {
+  border-color: rgba(0, 229, 160, 0.3);
+  background: var(--bg-elevated);
+}
+
+.study-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  animation: study-pulse 2s ease-in-out infinite;
+}
+
+@keyframes study-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 229, 160, 0.4); }
+  50% { box-shadow: 0 0 0 5px rgba(0, 229, 160, 0); }
+}
+
+.study-indicator-text {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+/* ===========================================
+   SCREEN 3: CAPTURE OVERLAY
+   =========================================== */
+.capture-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--glass-overlay);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.capture-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.capture-selection {
+  position: absolute;
+  border: 2px dashed var(--accent-cyan);
+  background: rgba(0, 212, 255, 0.04);
+  border-radius: var(--radius-sm);
+  cursor: move;
+  transition: border-style 0.1s;
+}
+
+.capture-selection.active {
+  border-style: solid;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 1px rgba(0,212,255,0.1), inset 0 0 20px rgba(0,212,255,0.05);
+}
+
+.selection-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--accent-cyan);
+  border-radius: 2px;
+  cursor: nwse-resize;
+  z-index: 1;
+}
+
+.selection-handle.nw { top: -6px; left: -6px; cursor: nwse-resize; }
+.selection-handle.ne { top: -6px; right: -6px; cursor: nesw-resize; }
+.selection-handle.sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
+.selection-handle.se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+.selection-dims {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.capture-actions {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-3);
+  z-index: 10;
+}
+
+.capture-actions .btn {
+  min-width: 100px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* ===========================================
+   SCREEN 4: RESULT BUBBLE
+   =========================================== */
+.result-bubble {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  z-index: 10001;
+  width: var(--bubble-width);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-bubble);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+  pointer-events: none;
+  transition: all var(--transition-slow);
+}
+
+.result-bubble.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.result-bubble.dragging { cursor: grabbing; transition: none; }
+
+.bubble-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: grab;
+}
+
+.bubble-header:active { cursor: grabbing; }
+
+.bubble-drag-handle {
+  width: 28px;
+  height: 4px;
+  background: var(--border-active);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.bubble-title {
+  flex: 1;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bubble-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bubble-answer {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.bubble-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bubble-conf {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bubble-conf-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.bubble-status {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.bubble-error {
+  background: rgba(255, 71, 87, 0.08);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  color: var(--accent-red);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.bubble-question {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.bubble-actions {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.bubble-actions .btn {
+  flex: 1;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  min-height: 34px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.bubble-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  gap: var(--space-3);
+  color: var(--text-secondary);
+}
+
+.bubble-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--accent-cyan);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.bubble-loading-text {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Confidence states */
+[data-state="low"] .bubble-body {
+  background: rgba(255, 71, 87, 0.04);
+  border-radius: var(--radius);
+  margin: calc(-1 * var(--space-1));
+  padding: var(--space-1);
+}
+
+/* ===========================================
+   SCREEN 5: DETAILS DRAWER (SIDEPANEL)
+   =========================================== */
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--drawer-width);
+  max-width: 100vw;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border-subtle);
+  z-index: 10002;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform var(--transition-slow);
+  overflow: hidden;
+}
+
+.drawer.open { transform: translateX(0); }
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.drawer-title {
+  flex: 1;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.drawer-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.detail-question-text {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.detail-answer-text {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--accent-cyan);
+  line-height: 1.2;
+}
+
+.detail-explanation {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.detail-explanation.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.detail-expand-btn {
+  font-size: var(--text-xs);
+  color: var(--accent-cyan);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+.detail-expand-btn:hover { text-decoration: underline; }
+
+.confidence-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.conf-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.conf-bar-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.conf-bar-track {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.conf-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width var(--transition-slow);
+}
+
+.conf-bar-fill.high { background: var(--accent-emerald); }
+.conf-bar-fill.medium { background: var(--accent-amber); }
+.conf-bar-fill.low { background: var(--accent-red); }
+
+.conf-bar-value {
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.drawer-footer {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.drawer-footer .btn { flex: 1; font-size: var(--text-xs); min-height: 38px; }
+
+/* ===========================================
+   SCREEN 6: HISTORY MINI-LIST
+   =========================================== */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.history-item:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-subtle);
+}
+
+.history-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.history-item-icon svg { width: 14px; height: 14px; color: var(--text-muted); }
+
+.history-item-content { flex: 1; min-width: 0; }
+
+.history-item-text {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 3px;
+}
+
+.history-item-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.history-item-time {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.history-item-conf-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--text-muted);
+  text-align: center;
+  gap: var(--space-2);
+}
+
+.history-empty svg { width: 32px; height: 32px; opacity: 0.3; }
+.history-empty p { font-size: var(--text-sm); }
+
+/* ===========================================
+   SCREEN 7: SETTINGS
+   =========================================== */
+.settings-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.settings-title {
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.settings-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.settings-row-label {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.settings-row-desc {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.settings-row-value {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.stepper-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.stepper-btn:hover { background: var(--border-subtle); }
+.stepper-btn:active { transform: scale(0.95); }
+
+.stepper-value {
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  min-width: 32px;
+  text-align: center;
+}
+
+.danger-zone {
+  padding: var(--space-4);
+  background: rgba(255, 71, 87, 0.06);
+  border: 1px solid rgba(255, 71, 87, 0.15);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.danger-zone-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.settings-about {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.settings-about-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+}
+
+.settings-about-row:first-child { color: var(--text-muted); }
+.settings-about-row:last-child { color: var(--text-secondary); }
+
+/* ===========================================
+   SCREEN 8: DASHBOARD OVERVIEW
+   =========================================== */
+.dashboard-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dashboard-header {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.dashboard-greeting {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.dashboard-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.stat-value.cyan { color: var(--accent-cyan); }
+.stat-value.emerald { color: var(--accent-emerald); }
+.stat-value.amber { color: var(--accent-amber); }
+
+.stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.dashboard-quick-actions {
+  padding: 0 var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.dashboard-recent {
+  padding: var(--space-4);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dashboard-recent-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-3);
+}
+
+.dashboard-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dashboard-plan-badge.pro {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.2);
+  color: var(--accent-cyan);
+}
+
+/* ===========================================
+   SCREEN 9: QUESTION HISTORY PAGE
+   =========================================== */
+.page-history {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.page-header-title {
+  flex: 1;
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.page-filters {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.filter-chip {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  border-radius: 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-chip.active {
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  color: var(--text-inverse);
+}
+
+.filter-chip:hover:not(.active) {
+  border-color: var(--border-active);
+  color: var(--text-primary);
+}
+
+.page-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.question-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.question-card:hover {
+  border-color: var(--border-active);
+}
+
+.question-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+
+.question-card-body {
+  padding: 0 var(--space-4) var(--space-3);
+}
+
+.question-card-text {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.question-card-answer {
+  font-size: var(--text-sm);
+  color: var(--accent-cyan);
+  font-weight: 500;
+  margin-top: var(--space-2);
+}
+
+.question-card-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+.question-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+/* ===========================================
+   SCREEN 10: WEAK TOPICS
+   =========================================== */
+.weak-topics-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.weak-topics-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.weak-topic-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.weak-topic-card:hover {
+  border-color: var(--border-active);
+  background: var(--bg-elevated);
+}
+
+.weak-topic-score {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.weak-topic-score.high { background: rgba(0,229,160,0.12); color: var(--accent-emerald); border: 2px solid rgba(0,229,160,0.3); }
+.weak-topic-score.medium { background: rgba(255,179,64,0.12); color: var(--accent-amber); border: 2px solid rgba(255,179,64,0.3); }
+.weak-topic-score.low { background: rgba(255,71,87,0.12); color: var(--accent-red); border: 2px solid rgba(255,71,87,0.3); }
+
+.weak-topic-info { flex: 1; min-width: 0; }
+
+.weak-topic-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.weak-topic-detail {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* ===========================================
+   SCREEN 11: PRACTICE GENERATOR
+   =========================================== */
+.practice-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.practice-form {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.form-select {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b90a0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+
+.difficulty-chip {
+  padding: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-align: center;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.difficulty-chip.active {
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  color: var(--text-inverse);
+}
+
+.difficulty-chip:hover:not(.active) {
+  border-color: var(--border-active);
+}
+
+.practice-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ===========================================
+   SCREEN 12: TELEGRAM LINK
+   =========================================== */
+.telegram-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.telegram-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.telegram-status-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.telegram-status-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.telegram-status-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 212, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.telegram-status-icon svg { width: 22px; height: 22px; color: var(--accent-cyan); }
+.telegram-status-icon.linked { background: rgba(0, 229, 160, 0.1); }
+.telegram-status-icon.linked svg { color: var(--accent-emerald); }
+
+.telegram-status-title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.telegram-status-sub {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.telegram-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--bg-elevated);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.telegram-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.telegram-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  color: var(--text-inverse);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ===========================================
+   SCREEN 13: BILLING PLACEHOLDER
+   =========================================== */
+.billing-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.billing-hero {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.billing-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 20px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.billing-plan-badge.free {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.billing-plan-badge.pro {
+  background: var(--accent-cyan);
+  color: var(--text-inverse);
+}
+
+.billing-plan-badge.team {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald));
+  color: var(--text-inverse);
+}
+
+.billing-price {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.billing-price span {
+  font-size: var(--text-sm);
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.billing-features {
+  padding: var(--space-4);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.billing-feature-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--text-sm);
+}
+
+.billing-feature-row:last-child { border-bottom: none; }
+
+.billing-feature-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.billing-feature-icon.included { color: var(--accent-emerald); }
+.billing-feature-icon.excluded { color: var(--text-muted); }
+
+.billing-cta {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   DEMO NAVIGATION
+   =========================================== */
+.demo-nav {
+  position: fixed;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-2);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: var(--space-2);
+  border-radius: 20px;
+  z-index: 10003;
+  backdrop-filter: blur(12px);
+}
+
+.demo-nav-btn {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.demo-nav-btn.active {
+  background: var(--accent-cyan);
+  color: var(--text-inverse);
+}
+
+.demo-nav-btn:hover:not(.active) {
+  background: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+/* Theme toggle */
+.theme-toggle-btn {
+  position: fixed;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 10004;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-glass);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--border-active);
+  color: var(--text-primary);
+}
+
+.demo-label {
+  position: fixed;
+  top: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  background: var(--bg-glass);
+  backdrop-filter: blur(8px);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 20px;
+  border: 1px solid var(--border-subtle);
+  z-index: 10003;
+  pointer-events: none;
+}
+  </style>
+</head>
+<body>
+
+<button class="theme-toggle-btn" onclick="toggleTheme()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  <span id="theme-label">Dark</span>
+</button>
+
+<div class="demo-label" id="screen-label">Screen 1: Extension Popup</div>
+
+<!-- SCREEN 1: POPUP -->
+<div id="screen-popup" class="screen-popup">
+  <div class="popup-header">
+    <div class="popup-logo">
+      <div class="popup-logo-mark">K</div>
+      KARÇÖZ
+    </div>
+    <div class="popup-status">
+      <div class="status-dot ready" id="popup-status-dot"></div>
+      <span class="popup-status-label" id="popup-status-label">Ready</span>
+    </div>
+  </div>
+
+  <div class="popup-body">
+    <div class="popup-cta">
+      <button class="btn-capture" onclick="showBubble('capturing')">
+        <svg class="btn-icon-graphic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+        <div>
+          <div class="btn-capture-label">Capture Selected Area</div>
+          <span class="btn-capture-sub">Draw to select question</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="popup-actions">
+      <button class="action-btn" onclick="showBubble('solving')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>
+        Scan Page
+      </button>
+      <button class="action-btn" onclick="showDrawer('history')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+        History
+      </button>
+      <button class="action-btn" onclick="showScreen('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+      </button>
+    </div>
+
+    <div class="divider" style="margin: 0 var(--space-4);"></div>
+
+    <div class="popup-divider-row">
+      <div class="study-toggle">
+        <span class="study-toggle-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Study Scan Mode
+        </span>
+        <label class="toggle">
+          <input type="checkbox" id="study-mode-toggle" onchange="toggleStudyMode(this.checked)">
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+    </div>
+
+    <div style="padding: 0 var(--space-4) var(--space-3);">
+      <div class="popup-result-preview" onclick="showDrawer('details')">
+        <div class="result-preview-header">
+          <div class="conf-ring good" style="width:28px;height:28px;font-size:10px;">92</div>
+          <div>
+            <div class="badge badge-emerald" style="font-size:10px;">Matematik</div>
+          </div>
+        </div>
+        <div class="result-preview-text">Bir üçgenin iç açıları toplamı 180° ise, dış açıları toplamı kaç derecedir?</div>
+        <div class="result-preview-answer">→ 360°</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup-footer">
+    <span class="popup-footer-version">v0.1.0</span>
+    <span class="popup-footer-upgrade" onclick="showScreen('billing')">Upgrade Pro →</span>
+  </div>
+</div>
+
+<!-- SCREEN 2: STUDY INDICATOR -->
+<div id="study-indicator" class="study-indicator" style="display:none;" onclick="hideStudyIndicator()">
+  <div class="study-dot"></div>
+  <span class="study-indicator-text">Study Mode</span>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+</div>
+
+<!-- SCREEN 3: CAPTURE OVERLAY -->
+<div id="capture-overlay" class="capture-overlay">
+  <div class="capture-selection" id="capture-selection" style="left:200px;top:150px;width:320px;height:200px;">
+    <div class="selection-handle nw"></div>
+    <div class="selection-handle ne"></div>
+    <div class="selection-handle sw"></div>
+    <div class="selection-handle se"></div>
+    <div class="selection-dims">320 × 200</div>
+  </div>
+  <div class="capture-actions">
+    <button class="btn btn-secondary" onclick="hideCaptureOverlay()">Cancel</button>
+    <button class="btn btn-primary" onclick="doCapture()">Capture</button>
+  </div>
+</div>
+
+<!-- SCREEN 4: RESULT BUBBLE -->
+<div id="result-bubble" class="result-bubble">
+  <div class="bubble-header" id="bubble-header" onmousedown="startDrag(event)">
+    <div class="bubble-drag-handle"></div>
+    <div class="bubble-title">Answer</div>
+    <button class="icon-btn" onclick="hideBubble()" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="bubble-body" id="bubble-body">
+    <!-- Dynamic content -->
+  </div>
+
+  <div class="bubble-actions" id="bubble-actions">
+    <button class="btn btn-secondary" onclick="showDrawer('details')">Details</button>
+    <button class="btn btn-secondary" onclick="saveResult()">Save</button>
+    <button class="btn btn-secondary" onclick="startPractice()">Practice</button>
+  </div>
+</div>
+
+<!-- SCREEN 5: DETAILS DRAWER -->
+<div id="drawer-overlay" class="capture-overlay" onclick="closeDrawer()"></div>
+<div id="details-drawer" class="drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Details</div>
+    <button class="icon-btn" onclick="closeDrawer()" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">
+      <div class="section-label">Question</div>
+      <div class="detail-question-text">Bir üçgenin iç açıları toplamı 180° ise, dış açıları toplamı kaç derecedir?</div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="section-label">Confidence</div>
+      <div style="display:flex;align-items:center;gap:var(--space-3);">
+        <div class="conf-ring good" style="width:44px;height:44px;font-size:var(--text-md);">92</div>
+        <div style="font-size:var(--text-sm);color:var(--text-secondary);">High confidence</div>
+      </div>
+      <div class="confidence-breakdown">
+        <div class="conf-bar">
+          <span class="conf-bar-label">OCR Quality</span>
+          <div class="conf-bar-track"><div class="conf-bar-fill high" style="width:88%"></div></div>
+          <span class="conf-bar-value">88%</span>
+        </div>
+        <div class="conf-bar">
+          <span class="conf-bar-label">Answer clarity</span>
+          <div class="conf-bar-track"><div class="conf-bar-fill high" style="width:94%"></div></div>
+          <span class="conf-bar-value">94%</span>
+        </div>
+        <div class="conf-bar">
+          <span class="conf-bar-label">Topic match</span>
+          <div class="conf-bar-track"><div class="conf-bar-fill high" style="width:91%"></div></div>
+          <span class="conf-bar-value">91%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="drawer-section">
+      <div class="section-label">Topic</div>
+      <span class="badge badge-emerald">Geometri</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="drawer-section">
+      <div class="section-label">Answer</div>
+      <div class="detail-answer-text">360°</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="drawer-section">
+      <div class="section-label">Explanation</div>
+      <div class="detail-explanation" id="detail-explanation">Bir üçgenin her bir dış açısı, kendisine komşu olmayan iki iç açının toplamına eşittir. Bu nedenle, üçgenin dış açıları toplamı her zaman iç açıları toplamının iki katıdır. Yani 180° × 2 = 360° olur.</div>
+      <button class="detail-expand-btn" onclick="toggleExplanation()">Show more</button>
+    </div>
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn btn-secondary">Save</button>
+    <button class="btn btn-secondary">Practice</button>
+    <button class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Telegram
+    </button>
+  </div>
+</div>
+
+<!-- SCREEN 6: HISTORY MINI-LIST (inside drawer for popup) -->
+<!-- Reuse history within popup actions -->
+
+<!-- SCREEN 7: SETTINGS -->
+<div id="screen-settings" class="screen-popup" style="display:none;">
+  <div class="settings-header">
+    <button class="icon-btn" onclick="showScreen('popup')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="settings-title">Settings</div>
+  </div>
+  <div class="settings-body">
+    <div class="settings-group">
+      <div class="section-label">Storage</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Store history</div>
+          <div class="settings-row-desc">Save solved questions locally</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Store images</div>
+          <div class="settings-row-desc">Cache captured screenshots</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Max history items</div>
+          <div class="settings-row-desc">Items to keep before trimming</div>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepMaxHistory(-1)">−</button>
+          <span class="stepper-value" id="max-history-val">50</span>
+          <button class="stepper-btn" onclick="stepMaxHistory(1)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="section-label">Display</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Auto-hide bubble</div>
+          <div class="settings-row-desc">0 = disabled</div>
+        </div>
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepAutoHide(-1000)">−</button>
+          <span class="stepper-value" id="auto-hide-val">8s</span>
+          <button class="stepper-btn" onclick="stepAutoHide(1000)">+</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Show study indicator</div>
+          <div class="settings-row-desc">Floating mode status pill</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="danger-zone">
+      <div class="danger-zone-title">Danger Zone</div>
+      <button class="btn btn-danger w-full" onclick="confirmClearData()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Clear All Data
+      </button>
+    </div>
+
+    <div class="settings-about">
+      <div class="settings-about-row">
+        <span>Version</span><span>v0.1.0</span>
+      </div>
+      <div class="settings-about-row">
+        <span>API Status</span>
+        <span style="color:var(--accent-emerald);">● Connected</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 8: DASHBOARD -->
+<div id="screen-dashboard" class="screen-popup" style="display:none;">
+  <div class="dashboard-header">
+    <div class="dashboard-plan-badge">Free</div>
+    <div class="dashboard-greeting">Good evening</div>
+    <div class="dashboard-title">Your Study Hub</div>
+  </div>
+
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <div class="stat-value cyan">12</div>
+      <div class="stat-label">Solved today</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value emerald">7</div>
+      <div class="stat-label">Day streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value amber">3</div>
+      <div class="stat-label">Weak topics</div>
+    </div>
+  </div>
+
+  <div class="dashboard-quick-actions">
+    <button class="action-btn" onclick="showScreen('popup');showBubble('solving')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+      New Capture
+    </button>
+    <button class="action-btn" onclick="showScreen('practice')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg>
+      Practice
+    </button>
+    <button class="action-btn" onclick="showScreen('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+      History
+    </button>
+    <button class="action-btn" onclick="showScreen('weak-topics')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M33 12a15 15 0 10-26 0 15 15 0 1026 0z"/><path d="M12 12l6-6M12 12l-6 6"/></svg>
+      Weak Topics
+    </button>
+  </div>
+
+  <div class="dashboard-recent">
+    <div class="dashboard-recent-title">Recent</div>
+    <div class="history-list">
+      <div class="history-item" onclick="showDrawer('details')">
+        <div class="history-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <div class="history-item-content">
+          <div class="history-item-text">x² + 5x + 6 = 0 denkleminin kökleri nedir?</div>
+          <div class="history-item-meta">
+            <span class="badge badge-emerald" style="font-size:9px;">Cebir</span>
+            <span class="history-item-time">2 min ago</span>
+          </div>
+        </div>
+      </div>
+      <div class="history-item" onclick="showDrawer('details')">
+        <div class="history-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <div class="history-item-content">
+          <div class="history-item-text">Fotosentez denklemi nedir?</div>
+          <div class="history-item-meta">
+            <span class="badge badge-amber" style="font-size:9px;">Biyoloji</span>
+            <span class="history-item-time">18 min ago</span>
+          </div>
+        </div>
+      </div>
+      <div class="history-item" onclick="showDrawer('details')">
+        <div class="history-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <div class="history-item-content">
+          <div class="history-item-text">Bir üçgenin iç açıları toplamı 180° ise, dış açıları toplamı kaç derecedir?</div>
+          <div class="history-item-meta">
+            <span class="badge badge-emerald" style="font-size:9px;">Geometri</span>
+            <span class="history-item-time">1 hr ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 9: QUESTION HISTORY PAGE -->
+<div id="screen-history" class="screen-popup" style="display:none;">
+  <div class="page-header">
+    <button class="icon-btn" onclick="showScreen('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="page-header-title">Question History</div>
+    <span style="font-size:var(--text-xs);color:var(--text-muted);">47 total</span>
+  </div>
+
+  <div class="page-filters">
+    <button class="filter-chip active">All</button>
+    <button class="filter-chip">This week</button>
+    <button class="filter-chip">By topic</button>
+  </div>
+
+  <div class="page-body">
+    <div class="question-card">
+      <div class="question-card-header">
+        <div class="conf-ring high" style="width:32px;height:32px;font-size:10px;">95</div>
+        <div class="question-card-body" style="flex:1;padding:0;">
+          <div class="question-card-text">x² + 5x + 6 = 0 denkleminin kökleri nedir?</div>
+          <div class="question-card-answer">→ x = -2 ve x = -3</div>
+        </div>
+      </div>
+      <div class="question-card-footer">
+        <div class="question-card-meta">
+          <span class="badge badge-emerald" style="font-size:9px;">Cebir</span>
+          <span class="history-item-time">2 min ago</span>
+        </div>
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipsis-v/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-card-header">
+        <div class="conf-ring medium" style="width:32px;height:32px;font-size:10px;">68</div>
+        <div class="question-card-body" style="flex:1;padding:0;">
+          <div class="question-card-text">Fotosentez denklemi nedir?</div>
+          <div class="question-card-answer">→ 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</div>
+        </div>
+      </div>
+      <div class="question-card-footer">
+        <div class="question-card-meta">
+          <span class="badge badge-amber" style="font-size:9px;">Biyoloji</span>
+          <span class="history-item-time">18 min ago</span>
+        </div>
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipsis-v/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-card-header">
+        <div class="conf-ring good" style="width:32px;height:32px;font-size:10px;">92</div>
+        <div class="question-card-body" style="flex:1;padding:0;">
+          <div class="question-card-text">Bir üçgenin iç açıları toplamı 180° ise, dış açıları toplamı kaç derecedir?</div>
+          <div class="question-card-answer">→ 360°</div>
+        </div>
+      </div>
+      <div class="question-card-footer">
+        <div class="question-card-meta">
+          <span class="badge badge-emerald" style="font-size:9px;">Geometri</span>
+          <span class="history-item-time">1 hr ago</span>
+        </div>
+        <button class="icon-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipsis-v/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 10: WEAK TOPICS -->
+<div id="screen-weak-topics" class="screen-popup" style="display:none;">
+  <div class="page-header">
+    <button class="icon-btn" onclick="showScreen('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="page-header-title">Weak Topics</div>
+  </div>
+
+  <div class="weak-topics-body">
+    <div class="weak-topic-card" onclick="showScreen('practice')">
+      <div class="weak-topic-score low">34%</div>
+      <div class="weak-topic-info">
+        <div class="weak-topic-name">Türev (Calculus)</div>
+        <div class="weak-topic-detail">5 questions, 3 wrong · Last: 2 days ago</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+
+    <div class="weak-topic-card" onclick="showScreen('practice')">
+      <div class="weak-topic-score medium">58%</div>
+      <div class="weak-topic-info">
+        <div class="weak-topic-name">Kimyasal Bağlar</div>
+        <div class="weak-topic-detail">4 questions, 2 wrong · Last: 5 days ago</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+
+    <div class="weak-topic-card" onclick="showScreen('practice')">
+      <div class="weak-topic-score medium">61%</div>
+      <div class="weak-topic-info">
+        <div class="weak-topic-name">Osmanlı Tarihi</div>
+        <div class="weak-topic-detail">8 questions, 3 wrong · Last: 1 week ago</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 11: PRACTICE GENERATOR -->
+<div id="screen-practice" class="screen-popup" style="display:none;">
+  <div class="page-header">
+    <button class="icon-btn" onclick="showScreen('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="page-header-title">Practice Generator</div>
+  </div>
+
+  <div class="practice-form">
+    <div class="form-group">
+      <label class="form-label">Topic</label>
+      <select class="form-select">
+        <option>Matematik — Cebir</option>
+        <option>Geometri</option>
+        <option>Fizik</option>
+        <option>Kimya</option>
+        <option>Biyoloji</option>
+        <option>Tarih</option>
+        <option>Türkçe</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Difficulty</label>
+      <div class="form-row">
+        <button class="difficulty-chip">Easy</button>
+        <button class="difficulty-chip active">Medium</button>
+        <button class="difficulty-chip">Hard</button>
+        <button class="difficulty-chip">Mixed</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Questions</label>
+      <div class="form-row">
+        <button class="difficulty-chip">5</button>
+        <button class="difficulty-chip active">10</button>
+        <button class="difficulty-chip">15</button>
+        <button class="difficulty-chip">20</button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-full" onclick="generatePractice()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Generate Practice Set
+    </button>
+  </div>
+
+  <div class="practice-results" id="practice-results">
+    <div class="section-label" style="margin-bottom:var(--space-2);">Generated Questions</div>
+    <div class="question-card">
+      <div class="question-card-header">
+        <span class="badge badge-cyan" style="font-size:9px;">Q1</span>
+        <div class="question-card-body" style="flex:1;padding:0;">
+          <div class="question-card-text">x² - 4 = 0 denklemini çözünüz.</div>
+        </div>
+        <span class="badge badge-muted" style="font-size:9px;">Easy</span>
+      </div>
+    </div>
+    <div class="question-card">
+      <div class="question-card-header">
+        <span class="badge badge-cyan" style="font-size:9px;">Q2</span>
+        <div class="question-card-body" style="flex:1;padding:0;">
+          <div class="question-card-text">3x + 7 = 22 ise x kaçtır?</div>
+        </div>
+        <span class="badge badge-muted" style="font-size:9px;">Easy</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 12: TELEGRAM LINK -->
+<div id="screen-telegram" class="screen-popup" style="display:none;">
+  <div class="page-header">
+    <button class="icon-btn" onclick="showScreen('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="page-header-title">Telegram</div>
+  </div>
+
+  <div class="telegram-body">
+    <div class="telegram-status-card">
+      <div class="telegram-status-header">
+        <div class="telegram-status-icon linked">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <div>
+          <div class="telegram-status-title">@karcoz_bot</div>
+          <div class="telegram-status-sub">Connected · Linked 3 days ago</div>
+        </div>
+      </div>
+      <button class="btn btn-danger w-full" onclick="unlinkTelegram()">Unlink Account</button>
+    </div>
+
+    <div class="section-label">How to link</div>
+    <div class="telegram-instructions">
+      <div class="telegram-step">
+        <div class="telegram-step-num">1</div>
+        <div>Open Telegram and search for <strong>@karcoz_bot</strong></div>
+      </div>
+      <div class="telegram-step">
+        <div class="telegram-step-num">2</div>
+        <div>Send <strong>/link</strong> command to get your verification code</div>
+      </div>
+      <div class="telegram-step">
+        <div class="telegram-step-num">3</div>
+        <div>Enter the code in your KARÇÖZ dashboard settings</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 13: BILLING PLACEHOLDER -->
+<div id="screen-billing" class="screen-popup" style="display:none;">
+  <div class="page-header">
+    <button class="icon-btn" onclick="showScreen('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="page-header-title">Plans</div>
+  </div>
+
+  <div class="billing-hero">
+    <div class="billing-plan-badge free">Free</div>
+    <div class="billing-price">₺0 <span>/ month</span></div>
+    <div style="font-size:var(--text-sm);color:var(--text-muted);">For casual learners</div>
+  </div>
+
+  <div class="billing-features">
+    <div class="billing-feature-row">
+      <svg class="billing-feature-icon included" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+      10 solves per day
+    </div>
+    <div class="billing-feature-row">
+      <svg class="billing-feature-icon included" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+      Question history
+    </div>
+    <div class="billing-feature-row">
+      <svg class="billing-feature-icon included" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+      Practice generator
+    </div>
+    <div class="billing-feature-row">
+      <svg class="billing-feature-icon excluded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      <span style="color:var(--text-muted);">Priority processing</span>
+    </div>
+    <div class="billing-feature-row">
+      <svg class="billing-feature-icon excluded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      <span style="color:var(--text-muted);">Unlimited solves</span>
+    </div>
+    <div class="billing-feature-row">
+      <svg class="billing-feature-icon excluded" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      <span style="color:var(--text-muted);">Team features</span>
+    </div>
+  </div>
+
+  <div class="billing-cta">
+    <button class="btn btn-primary w-full" onclick="showProBanner()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Upgrade to Pro — ₺49/mo
+    </button>
+  </div>
+</div>
+
+<!-- DEMO NAV -->
+<nav class="demo-nav">
+  <button class="demo-nav-btn active" onclick="showScreen('popup')">Popup</button>
+  <button class="demo-nav-btn" onclick="showScreen('dashboard')">Dashboard</button>
+  <button class="demo-nav-btn" onclick="showScreen('history')">History</button>
+  <button class="demo-nav-btn" onclick="showScreen('weak-topics')">Weak</button>
+  <button class="demo-nav-btn" onclick="showScreen('practice')">Practice</button>
+  <button class="demo-nav-btn" onclick="showScreen('telegram')">Telegram</button>
+  <button class="demo-nav-btn" onclick="showScreen('billing')">Billing</button>
+</nav>
+
+<script>
+// ── Theme Toggle ──
+function toggleTheme() {
+  const html = document.documentElement;
+  const label = document.getElementById('theme-label');
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.setAttribute('data-theme', 'light');
+    label.textContent = 'Light';
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    label.textContent = 'Dark';
+  }
+}
+
+// ── Study Mode ──
+function toggleStudyMode(on) {
+  const indicator = document.getElementById('study-indicator');
+  indicator.style.display = on ? 'flex' : 'none';
+}
+
+function hideStudyIndicator() {
+  document.getElementById('study-mode-toggle').checked = false;
+  document.getElementById('study-indicator').style.display = 'none';
+}
+
+// ── Screen Navigation ──
+const screens = ['popup', 'dashboard', 'settings', 'history', 'weak-topics', 'practice', 'telegram', 'billing'];
+const labels = {
+  popup: 'Screen 1: Extension Popup',
+  dashboard: 'Screen 8: Dashboard Overview',
+  settings: 'Screen 7: Settings',
+  history: 'Screen 9: Question History',
+  'weak-topics': 'Screen 10: Weak Topics',
+  practice: 'Screen 11: Practice Generator',
+  telegram: 'Screen 12: Telegram Link',
+  billing: 'Screen 13: Billing'
+};
+
+function showScreen(name) {
+  // Hide all screens
+  screens.forEach(s => {
+    const el = document.getElementById('screen-' + s);
+    if (el) el.style.display = 'none';
+  });
+  // Show target
+  const target = document.getElementById('screen-' + name);
+  if (target) {
+    target.style.display = 'flex';
+    target.style.flexDirection = 'column';
+  }
+  // Update nav
+  document.querySelectorAll('.demo-nav-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.demo-nav-btn').forEach(btn => {
+    if (btn.textContent.toLowerCase().includes(name.replace('-', ''))) btn.classList.add('active');
+  });
+  // Update label
+  document.getElementById('screen-label').textContent = labels[name] || name;
+  // Close drawer
+  closeDrawer();
+}
+
+// ── Capture Overlay ──
+function showCaptureOverlay() {
+  document.getElementById('capture-overlay').classList.add('active');
+}
+function hideCaptureOverlay() {
+  document.getElementById('capture-overlay').classList.remove('active');
+}
+function doCapture() {
+  hideCaptureOverlay();
+  showBubble('reading');
+  setTimeout(() => showBubble('solving'), 800);
+  setTimeout(() => showBubble('ready'), 2500);
+}
+
+// ── Result Bubble ──
+function showBubble(state) {
+  const bubble = document.getElementById('result-bubble');
+  const body = document.getElementById('bubble-body');
+  const actions = document.getElementById('bubble-actions');
+
+  bubble.classList.add('visible');
+  bubble.setAttribute('data-state', state === 'low' ? 'low' : '');
+
+  if (state === 'capturing') {
+    body.innerHTML = `
+      <div class="bubble-loading">
+        <div class="bubble-spinner"></div>
+        <div class="bubble-loading-text">Capturing...</div>
+      </div>`;
+    actions.style.display = 'none';
+  } else if (state === 'reading') {
+    body.innerHTML = `
+      <div class="bubble-loading">
+        <div class="bubble-spinner" style="border-color:rgba(255,179,64,0.3);border-top-color:var(--accent-amber)"></div>
+        <div class="bubble-loading-text">Reading question...</div>
+      </div>`;
+    actions.style.display = 'none';
+  } else if (state === 'solving') {
+    body.innerHTML = `
+      <div class="bubble-loading">
+        <div class="bubble-spinner" style="border-color:rgba(0,212,255,0.3);border-top-color:var(--accent-cyan)"></div>
+        <div class="bubble-loading-text">Solving...</div>
+      </div>`;
+    actions.style.display = 'none';
+  } else if (state === 'low') {
+    body.innerHTML = `
+      <div class="bubble-question">Bir üçgenin iç açıları toplamı 180° ise, dış açıları toplamı kaç derecedir?</div>
+      <div class="bubble-answer">360°</div>
+      <div class="bubble-meta">
+        <div class="bubble-conf">
+          <div class="conf-ring low" style="width:28px;height:28px;font-size:10px;">42</div>
+          <span class="bubble-conf-label">Confidence</span>
+        </div>
+        <span class="bubble-status" style="color:var(--accent-amber)">Low confidence</span>
+      </div>`;
+    actions.style.display = 'flex';
+  } else if (state === 'error') {
+    body.innerHTML = `
+      <div class="bubble-error">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        Couldn't solve this. Try again.
+      </div>
+      <button class="btn btn-secondary w-full" onclick="showBubble('solving')" style="margin-top:var(--space-2)">Retry</button>`;
+    actions.style.display = 'none';
+  } else {
+    body.innerHTML = `
+      <div class="bubble-question">Bir üçgenin iç açıları toplamı 180° ise, dış açıları toplamı kaç derecedir?</div>
+      <div class="bubble-answer">360°</div>
+      <div class="bubble-meta">
+        <div class="bubble-conf">
+          <div class="conf-ring good" style="width:28px;height:28px;font-size:10px;">92</div>
+          <span class="bubble-conf-label">Confidence</span>
+        </div>
+        <span class="bubble-status" style="color:var(--accent-emerald)">High confidence</span>
+      </div>`;
+    actions.style.display = 'flex';
+  }
+}
+
+function hideBubble() {
+  document.getElementById('result-bubble').classList.remove('visible');
+}
+
+function saveResult() {
+  showBubble('ready');
+}
+
+function startPractice() {
+  showScreen('practice');
+  hideBubble();
+}
+
+// ── Bubble Drag ──
+let isDragging = false, dragOffX = 0, dragOffY = 0;
+function startDrag(e) {
+  const bubble = document.getElementById('result-bubble');
+  isDragging = true;
+  bubble.classList.add('dragging');
+  dragOffX = e.clientX - bubble.offsetLeft;
+  dragOffY = e.clientY - bubble.offsetTop;
+}
+document.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const bubble = document.getElementById('result-bubble');
+  bubble.style.left = (e.clientX - dragOffX) + 'px';
+  bubble.style.top = (e.clientY - dragOffY) + 'px';
+  bubble.style.right = 'auto';
+  bubble.style.bottom = 'auto';
+});
+document.addEventListener('mouseup', () => { isDragging = false; document.getElementById('result-bubble').classList.remove('dragging'); });
+
+// ── Drawer ──
+function showDrawer(type) {
+  const drawer = document.getElementById('details-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  if (type === 'details') {
+    document.getElementById('screen-label').textContent = 'Screen 5: Details Drawer';
+  } else if (type === 'history') {
+    document.getElementById('screen-label').textContent = 'Screen 6: History Mini-List';
+  }
+  drawer.classList.add('open');
+  overlay.classList.add('active');
+}
+
+function closeDrawer() {
+  document.getElementById('details-drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('active');
+}
+
+// ── Settings interactions ──
+let maxHistory = 50;
+function stepMaxHistory(dir) {
+  maxHistory = Math.max(10, Math.min(200, maxHistory + dir * 10));
+  document.getElementById('max-history-val').textContent = maxHistory;
+}
+
+let autoHide = 8000;
+function stepAutoHide(dir) {
+  autoHide = Math.max(0, Math.min(30000, autoHide + dir));
+  document.getElementById('auto-hide-val').textContent = autoHide === 0 ? 'Off' : (autoHide/1000) + 's';
+}
+
+function confirmClearData() {
+  if (confirm('Delete all KARÇÖZ data? This cannot be undone.')) {
+    alert('All data cleared.');
+  }
+}
+
+// ── Practice ──
+function generatePractice() {
+  const results = document.getElementById('practice-results');
+  results.innerHTML = `
+    <div class="section-label" style="margin-bottom:var(--space-2);">Generating...</div>
+    <div style="display:flex;justify-content:center;padding:var(--space-6);">
+      <div class="bubble-spinner"></div>
+    </div>`;
+  setTimeout(() => {
+    results.innerHTML = `
+      <div class="section-label" style="margin-bottom:var(--space-2);">10 Questions Generated</div>
+      ${['x² - 4 = 0 denklemini çözünüz.', '3x + 7 = 22 ise x kaçtır?', 'Bir dikdörtgenin çevresi 24 cm ise alanı en fazla kaç cm² olabilir?', 'log₂(32) değeri kaçtır?', 'Sin 30° değeri nedir?'].map((q, i) => `
+        <div class="question-card">
+          <div class="question-card-header">
+            <span class="badge badge-cyan" style="font-size:9px;">Q${i+1}</span>
+            <div class="question-card-body" style="flex:1;padding:0;">
+              <div class="question-card-text">${q}</div>
+            </div>
+          </div>
+        </div>`).join('')}
+      <button class="btn btn-primary w-full" style="margin-top:var(--space-3)">Start Practice</button>`;
+  }, 1500);
+}
+
+// ── Telegram ──
+function unlinkTelegram() {
+  if (confirm('Unlink @karcoz_bot from your account?')) {
+    alert('Telegram unlinked.');
+  }
+}
+
+// ── Pro Banner ──
+function showProBanner() {
+  alert('Pro plan coming soon! Current waitlist: 47 users');
+}
+
+// ── Toggle Explanation ──
+let explanationExpanded = false;
+function toggleExplanation() {
+  explanationExpanded = !explanationExpanded;
+  const el = document.getElementById('detail-explanation');
+  const btn = document.querySelector('.detail-expand-btn');
+  if (explanationExpanded) {
+    el.classList.add('expanded');
+    btn.textContent = 'Show less';
+  } else {
+    el.classList.remove('expanded');
+    btn.textContent = 'Show more';
+  }
+}
+
+// ── Popup status demo ──
+const states = ['ready', 'reading', 'solving'];
+let stateIdx = 0;
+setInterval(() => {
+  // Uncomment to auto-cycle:
+  // stateIdx = (stateIdx + 1) % states.length;
+  // updateStatus(states[stateIdx]);
+}, 3000);
+
+function updateStatus(state) {
+  const dot = document.getElementById('popup-status-dot');
+  const label = document.getElementById('popup-status-label');
+  dot.className = 'status-dot ' + state;
+  const labels = { ready: 'Ready', reading: 'Reading...', solving: 'Solving...' };
+  label.textContent = labels[state] || state;
+}
+
+// ── Init ──
+updateStatus('ready');
+showBubble('ready');
+</script>
+</body>
+</html>

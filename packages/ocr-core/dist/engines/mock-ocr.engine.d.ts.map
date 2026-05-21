@@ -1,0 +1,1 @@
+{"version":3,"file":"mock-ocr.engine.d.ts","sourceRoot":"","sources":["../../src/engines/mock-ocr.engine.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,SAAS,EAAE,aAAa,EAAE,MAAM,aAAa,CAAC;AAG5D,qBAAa,aAAc,YAAW,SAAS;IAC7C,IAAI,SAAU;IAEd,WAAW,IAAI,OAAO;IAIhB,OAAO,CAAC,KAAK,EAAE,MAAM,GAAG,MAAM,GAAG,OAAO,CAAC,aAAa,CAAC;CA0B9D"}

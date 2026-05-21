@@ -1,0 +1,1 @@
+{"version":3,"file":"ocr-engine.interface.d.ts","sourceRoot":"","sources":["../../src/engines/ocr-engine.interface.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,aAAa,CAAC;AAE5C,MAAM,WAAW,SAAS;IACxB,IAAI,EAAE,MAAM,CAAC;IACb,OAAO,CAAC,KAAK,EAAE,MAAM,GAAG,MAAM,GAAG,OAAO,CAAC,aAAa,CAAC,CAAC;IACxD,WAAW,IAAI,OAAO,CAAC;CACxB"}

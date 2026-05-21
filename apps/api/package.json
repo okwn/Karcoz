@@ -1,0 +1,39 @@
+{
+  "name": "@karcoz/api",
+  "version": "0.1.0",
+  "description": "KARÇÖZ API — solve endpoint and question management",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@fastify/compress": "^8.3.1",
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/rate-limit": "^10.0.0",
+    "@karcoz/ai-core": "file:../../packages/ai-core",
+    "@karcoz/shared": "file:../../packages/shared",
+    "@prisma/client": "^6.0.0",
+    "fastify": "^5.0.0",
+    "redis": "^5.12.1",
+    "stripe": "^22.1.1",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "@types/redis": "^4.0.10",
+    "prisma": "^6.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

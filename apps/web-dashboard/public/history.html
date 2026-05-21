@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History — KARÇÖZ</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__logo">KARÇÖZ</div>
+    <div class="nav__links">
+      <a href="/dashboard" class="nav__link">Dashboard</a>
+      <a href="/history" class="nav__link nav__link--active">History</a>
+      <a href="/weak-topics" class="nav__link">Weak Topics</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <header class="page-header">
+      <h1 class="page-title">Question History</h1>
+      <div class="page-actions">
+        <button class="btn btn--danger" id="clear-btn">Clear All</button>
+      </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input type="text" class="input" id="filter-topic" placeholder="Topic filter">
+      <select class="input" id="filter-type">
+        <option value="">All types</option>
+        <option value="multiple_choice">Multiple Choice</option>
+        <option value="fill_blank">Fill in Blank</option>
+        <option value="true_false">True/False</option>
+        <option value="free_response">Free Response</option>
+      </select>
+      <label class="checkbox">
+        <input type="checkbox" id="filter-saved"> Saved only
+      </label>
+      <button class="btn" onclick="loadHistory()">Apply</button>
+    </div>
+
+    <div id="loading" class="loading"><div class="loading__spinner"></div><span>Loading...</span></div>
+    <div id="error" class="error" style="display:none"><p id="error-msg"></p></div>
+    <div id="empty" class="empty" style="display:none"><p>No questions found</p></div>
+
+    <div id="meta" class="page-meta" style="display:none"></div>
+    <div id="history-list" style="display:none"></div>
+
+    <div id="pagination" class="pagination" style="display:none">
+      <button class="btn" id="prev-btn">← Prev</button>
+      <span id="page-info"></span>
+      <button class="btn" id="next-btn">Next →</button>
+    </div>
+  </main>
+
+  <script>
+    const API = 'http://localhost:8100/api';
+    let currentPage = 1;
+
+    async function loadHistory(page = 1) {
+      currentPage = page;
+      const topic = document.getElementById('filter-topic').value;
+      const question_type = document.getElementById('filter-type').value;
+      const saved_only = document.getElementById('filter-saved').checked;
+
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('empty').style.display = 'none';
+      document.getElementById('history-list').style.display = 'none';
+      document.getElementById('meta').style.display = 'none';
+      document.getElementById('pagination').style.display = 'none';
+
+      try {
+        const params = new URLSearchParams({ page, limit: 20 });
+        if (topic) params.set('topic', topic);
+        if (question_type) params.set('question_type', question_type);
+        if (saved_only) params.set('saved_only', 'true');
+
+        const res = await fetch(`${API}/questions/history?${params}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        document.getElementById('loading').style.display = 'none';
+
+        if (!data.data?.length) {
+          document.getElementById('empty').style.display = 'flex';
+          return;
+        }
+
+        renderHistory(data.data);
+        renderMeta(data.meta);
+
+        const pagination = document.getElementById('pagination');
+        pagination.style.display = 'flex';
+        document.getElementById('page-info').textContent = `Page ${data.meta.page} of ${data.meta.totalPages}`;
+        document.getElementById('prev-btn').disabled = data.meta.page <= 1;
+        document.getElementById('next-btn').disabled = data.meta.page >= data.meta.totalPages;
+
+        document.getElementById('history-list').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error-msg').textContent = err.message;
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    function renderHistory(items) {
+      document.getElementById('history-list').innerHTML = items.map(item => {
+        const conf = item.confidenceScore ? Math.round(item.confidenceScore * 100) : 0;
+        const confClass = conf < 60 ? 'badge--warn' : conf < 80 ? 'badge--mid' : 'badge--ok';
+        return `<a href="/questions/${item.id}" class="history-item">
+          <div class="history-item__left">
+            <span class="history-item__topic">${escapeHtml(item.topic ?? '—')}</span>
+            <span class="history-item__text">${escapeHtml((item.extractedText || '').slice(0, 100))}...</span>
+          </div>
+          <div class="history-item__right">
+            <span class="sp-badge ${confClass}">${conf}%</span>
+            <span class="history-item__type">${escapeHtml(item.questionType ?? '—')}</span>
+            <span class="history-item__time">${formatTime(item.createdAt)}</span>
+          </div>
+        </a>`;
+      }).join('');
+    }
+
+    function renderMeta(meta) {
+      document.getElementById('meta').textContent = `Showing ${meta.limit} of ${meta.total} questions`;
+      document.getElementById('meta').style.display = 'block';
+    }
+
+    function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+    function formatTime(ts) { return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+
+    document.getElementById('prev-btn').addEventListener('click', () => loadHistory(currentPage - 1));
+    document.getElementById('next-btn').addEventListener('click', () => loadHistory(currentPage + 1));
+
+    document.getElementById('clear-btn').addEventListener('click', async () => {
+      if (!confirm('Delete all local history?')) return;
+      const res = await fetch(`${API}/user/data?confirm=delete-all`, { method: 'DELETE' });
+      if (res.ok) loadHistory();
+    });
+
+    window.loadHistory = loadHistory;
+    loadHistory();
+  </script>
+</body>
+</html>

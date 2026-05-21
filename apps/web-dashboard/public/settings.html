@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — KARÇÖZ</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__logo">KARÇÖZ</div>
+    <div class="nav__links">
+      <a href="/dashboard" class="nav__link">Dashboard</a>
+      <a href="/history" class="nav__link">History</a>
+      <a href="/weak-topics" class="nav__link">Weak Topics</a>
+      <a href="/settings" class="nav__link nav__link--active">Settings</a>
+    </div>
+  </nav>
+
+  <main class="main" style="max-width:640px">
+
+    <!-- Auth gate -->
+    <div id="auth-gate" style="display:none" class="auth-gate">
+      <div class="auth-gate__inner">
+        <div class="auth-gate__icon">🔒</div>
+        <h2 class="auth-gate__title">Sign in to access settings</h2>
+        <p class="auth-gate__desc">You need to be signed in to view and manage your settings.</p>
+        <a href="/login" class="btn btn--primary">Sign In</a>
+      </div>
+    </div>
+
+    <div id="loading" class="loading"><div class="loading__spinner"></div><span>Loading settings…</span></div>
+    <div id="error" class="error" style="display:none"><p id="error-msg"></p><button class="btn" onclick="loadSettings()">Retry</button></div>
+
+    <div id="content" style="display:none">
+
+      <!-- ===== Privacy Controls ===== -->
+      <section class="section">
+        <h2 class="section__title">Privacy Controls</h2>
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Store History</span>
+            <span class="setting-row__desc">Keep a record of solved questions on this device</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="storeHistory" checked><span class="toggle__slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Store Images</span>
+            <span class="setting-row__desc">Save captured screenshots (uses more storage)</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="storeImages" checked><span class="toggle__slider"></span></label>
+        </div>
+      </section>
+
+      <!-- ===== Explanation Level ===== -->
+      <section class="section">
+        <h2 class="section__title">Explanation Level</h2>
+        <p class="section__desc">Controls how much reasoning the AI shows when answering questions.</p>
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Explanation Depth</span>
+          </div>
+          <select class="select" id="explanationLevel">
+            <option value="brief">Brief — Short, one line answer</option>
+            <option value="standard">Standard — Concise explanation</option>
+            <option value="detailed">Detailed — Full reasoning</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- ===== Result Mode ===== -->
+      <section class="section">
+        <h2 class="section__title">Result Mode</h2>
+        <p class="section__desc">Controls how answers are presented after solving a question.</p>
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Answer Display</span>
+          </div>
+          <select class="select" id="resultMode">
+            <option value="short">Compact — Answer only</option>
+            <option value="full">With Brief Explanation</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- ===== Telegram ===== -->
+      <section class="section">
+        <h2 class="section__title">Telegram Integration</h2>
+        <p class="section__desc">Receive answers and notifications via Telegram.</p>
+
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Telegram Enabled</span>
+            <span class="setting-row__desc">Allow sending answers to your Telegram bot</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="telegramEnabled"><span class="toggle__slider"></span></label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Connection Status</span>
+            <span class="setting-row__desc" id="telegram-status-desc">Not connected</span>
+          </div>
+          <span class="status-badge" id="telegram-status-badge">Disconnected</span>
+        </div>
+
+        <div class="telegram-actions" id="telegram-actions">
+          <button class="btn btn--primary" id="btn-link-telegram" onclick="linkTelegram()">Link Telegram</button>
+          <button class="btn btn--danger" id="btn-unlink-telegram" onclick="unlinkTelegram()" style="display:none">Unlink</button>
+        </div>
+      </section>
+
+      <!-- ===== Account ===== -->
+      <section class="section">
+        <h2 class="section__title">Account</h2>
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Email</span>
+          </div>
+          <span class="setting-row__value" id="account-email">—</span>
+        </div>
+        <div class="setting-row">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Extension Tokens</span>
+            <span class="setting-row__desc" id="tokens-count-desc">—</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" onclick="openTokensModal()">Manage</button>
+            <button class="btn btn--primary" onclick="generateToken()">Generate New Token</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Data Management ===== -->
+      <section class="section">
+        <h2 class="section__title">Data Management</h2>
+        <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:12px">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Export My Data</span>
+            <span class="setting-row__desc">Download all your data as a JSON file</span>
+          </div>
+          <button class="btn" onclick="exportData()">Export My Data (JSON)</button>
+        </div>
+        <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:12px">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Delete History</span>
+            <span class="setting-row__desc">Remove all question history. This cannot be undone.</span>
+          </div>
+          <button class="btn btn--danger" onclick="deleteAllHistory()">Delete All History</button>
+        </div>
+      </section>
+
+      <!-- ===== Danger Zone ===== -->
+      <section class="section section--danger">
+        <h2 class="section__title section__title--danger">Danger Zone</h2>
+        <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:12px">
+          <div class="setting-row__info">
+            <span class="setting-row__label">Delete My Account</span>
+            <span class="setting-row__desc">Permanently delete your account and all associated data. This action cannot be undone.</span>
+          </div>
+          <button class="btn btn--danger btn--danger-solid" onclick="deleteAccount()">Delete My Account</button>
+        </div>
+      </section>
+
+      <div style="margin-top:32px">
+        <button class="btn btn--primary" onclick="saveSettings()" id="save-btn">Save Settings</button>
+        <span id="save-status" style="margin-left:12px;font-size:11px;color:var(--dim);display:none"></span>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+  <!-- Tokens Modal -->
+  <div id="tokens-modal" class="modal" style="display:none">
+    <div class="modal__backdrop" onclick="closeTokensModal()"></div>
+    <div class="modal__panel">
+      <div class="modal__header">
+        <h3 class="modal__title">Extension Tokens</h3>
+        <button class="modal__close" onclick="closeTokensModal()">✕</button>
+      </div>
+      <div class="modal__body">
+        <div id="tokens-list"></div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn" onclick="closeTokensModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8100/api';
+
+    let settingsState = {};
+    let sessionData = {};
+
+    // ===== Load =====
+
+    async function loadSettings() {
+      const loading = document.getElementById('loading');
+      const error   = document.getElementById('error');
+      const content = document.getElementById('content');
+      const gate    = document.getElementById('auth-gate');
+
+      loading.style.display = 'flex';
+      error.style.display  = 'none';
+      content.style.display = 'none';
+      gate.style.display   = 'none';
+
+      try {
+        // Fetch session to check auth + get user info
+        const sessionRes = await fetch(`${API}/auth/session`, { credentials: 'include' });
+        if (sessionRes.status === 401) {
+          loading.style.display = 'none';
+          gate.style.display = 'flex';
+          return;
+        }
+        if (!sessionRes.ok) throw new Error(`Session fetch failed: ${sessionRes.status}`);
+
+        sessionData = await sessionRes.json();
+
+        // Populate account email
+        document.getElementById('account-email').textContent = sessionData.email || '—';
+
+        // Fetch extension tokens separately
+        let tokens = [];
+        try {
+          const tokensRes = await fetch(`${API}/auth/extension/tokens`, { credentials: 'include' });
+          if (tokensRes.ok) {
+            const tokensData = await tokensRes.json();
+            tokens = tokensData.tokens || [];
+          }
+        } catch (_) {}
+        document.getElementById('tokens-count-desc').textContent =
+          tokens.length === 1 ? '1 token active' : `${tokens.length} tokens active`;
+
+        // Fetch Telegram status separately
+        let tgConnected = false;
+        let tgEnabled = false;
+        try {
+          const tgRes = await fetch(`${API}/telegram/status`, { credentials: 'include' });
+          if (tgRes.ok) {
+            const tgData = await tgRes.json();
+            tgConnected = !!tgData.telegramChatId;
+            tgEnabled = tgData.isLinked || false;
+          }
+        } catch (_) {}
+        updateTelegramUI(tgConnected, tgEnabled);
+
+        // Load settings
+        const setRes = await fetch(`${API}/users/me/settings`, { credentials: 'include' });
+        if (!setRes.ok) throw new Error(`Settings fetch failed: ${setRes.status}`);
+        settingsState = await setRes.json();
+
+        applySettingsToUI(settingsState);
+
+        loading.style.display = 'none';
+        content.style.display = 'block';
+
+      } catch (err) {
+        loading.style.display = 'none';
+        document.getElementById('error-msg').textContent = err.message;
+        error.style.display = 'block';
+      }
+    }
+
+    function applySettingsToUI(s) {
+      document.getElementById('storeHistory').checked = s.storeHistory !== false;
+      document.getElementById('storeImages').checked  = s.storeImages !== false;
+
+      const el = document.getElementById('explanationLevel');
+      if (el) el.value = s.explanationLevel || 'standard';
+
+      const rm = document.getElementById('resultMode');
+      if (rm) rm.value = s.resultMode || 'full';
+    }
+
+    // ===== Save =====
+
+    async function saveSettings() {
+      const btn = document.getElementById('save-btn');
+      const sta = document.getElementById('save-status');
+      btn.disabled = true;
+      sta.style.display = 'none';
+
+      const payload = {
+        storeHistory:      document.getElementById('storeHistory').checked,
+        storeImages:       document.getElementById('storeImages').checked,
+        explanationLevel:  document.getElementById('explanationLevel').value,
+        resultMode:        document.getElementById('resultMode').value,
+        telegramEnabled:   document.getElementById('telegramEnabled').checked,
+      };
+
+      try {
+        const res = await fetch(`${API}/users/me/settings`, {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        settingsState = { ...settingsState, ...payload };
+        sta.textContent = 'Saved';
+        sta.style.color  = 'var(--accent)';
+        sta.style.display = 'inline';
+        setTimeout(() => { sta.style.display = 'none'; }, 2500);
+      } catch (err) {
+        sta.textContent = 'Failed to save';
+        sta.style.color  = 'var(--danger)';
+        sta.style.display = 'inline';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ===== Telegram =====
+
+    function updateTelegramUI(connected, enabled) {
+      const badge  = document.getElementById('telegram-status-badge');
+      const desc   = document.getElementById('telegram-status-desc');
+      const btnLink   = document.getElementById('btn-link-telegram');
+      const btnUnlink = document.getElementById('btn-unlink-telegram');
+      const toggle = document.getElementById('telegramEnabled');
+
+      toggle.checked = enabled;
+      if (connected) {
+        badge.textContent = 'Connected';
+        badge.className   = 'status-badge status-badge--ok';
+        desc.textContent  = 'Your Telegram account is linked';
+        btnLink.style.display   = 'none';
+        btnUnlink.style.display = 'inline-block';
+      } else {
+        badge.textContent = 'Disconnected';
+        badge.className   = 'status-badge';
+        desc.textContent  = 'Not connected — link your Telegram account';
+        btnLink.style.display   = 'inline-block';
+        btnUnlink.style.display = 'none';
+      }
+    }
+
+    async function linkTelegram() {
+      alert('Open Telegram, find your KARÇÖZ bot, and send /link to get your link code.');
+    }
+
+    async function unlinkTelegram() {
+      if (!confirm('Unlink your Telegram account?')) return;
+      try {
+        // First get status to find the chatId
+        const statusRes = await fetch(`${API}/telegram/status`, { credentials: 'include' });
+        if (!statusRes.ok) throw new Error('Failed to get Telegram status');
+        const status = await statusRes.json();
+        if (!status.telegramChatId) throw new Error('No linked account found');
+
+        const res = await fetch(`${API}/telegram/unlink-account`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegramChatId: status.telegramChatId }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        loadSettings();
+      } catch (err) {
+        alert('Unlink failed: ' + err.message);
+      }
+    }
+
+    // ===== Tokens =====
+
+    async function openTokensModal() {
+      let tokens = [];
+      try {
+        const tokensRes = await fetch(`${API}/auth/extension/tokens`, { credentials: 'include' });
+        if (tokensRes.ok) {
+          const data = await tokensRes.json();
+          tokens = data.tokens || [];
+        }
+      } catch (_) {}
+
+      const list = document.getElementById('tokens-list');
+
+      if (!tokens.length) {
+        list.innerHTML = '<p class="empty">No tokens yet.</p>';
+      } else {
+        list.innerHTML = '<div class="tokens-list">' + tokens.map(t => `
+          <div class="token-row">
+            <div class="token-row__info">
+              <span class="token-row__name">${escapeHtml(t.deviceName || 'Unknown device')}</span>
+              <span class="token-row__meta">
+                Created ${formatDate(t.createdAt)} · Last used ${t.lastUsed ? formatDate(t.lastUsed) : 'never'}
+              </span>
+            </div>
+            <div class="token-row__token">${escapeHtml(t.token ? (t.token.slice(0,12) + '…') : '—')}</div>
+          </div>
+        `).join('') + '</div>';
+      }
+
+      document.getElementById('tokens-modal').style.display = 'flex';
+    }
+
+    function closeTokensModal() {
+      document.getElementById('tokens-modal').style.display = 'none';
+    }
+
+    async function generateToken() {
+      const name = prompt('Device name (e.g. "Chrome on MacBook"):');
+      if (name === null) return;
+      if (!name.trim()) { alert('Device name is required.'); return; }
+      try {
+        const res = await fetch(`${API}/auth/extension/token`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deviceName: name.trim() }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to generate token');
+        alert(`Token created:\n${data.token}\n\nSave this now — it won't be shown again.`);
+        loadSettings();
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    // ===== Data Management =====
+
+    async function exportData() {
+      try {
+        const res = await fetch(`${API}/users/me/export`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = `karcoz-export-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Export failed: ' + err.message);
+      }
+    }
+
+    async function deleteAllHistory() {
+      if (!confirm('Delete all your question history? This cannot be undone.')) return;
+      if (!confirm('Are you absolutely sure? Type "DELETE" in the next prompt if so.')) return;
+      const confirmText = prompt('Type DELETE to confirm:');
+      if (confirmText !== 'DELETE') return;
+
+      try {
+        const res = await fetch(`${API}/users/me/history`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        alert('History deleted.');
+      } catch (err) {
+        alert('Failed to delete history: ' + err.message);
+      }
+    }
+
+    // ===== Danger Zone =====
+
+    async function deleteAccount() {
+      if (!confirm('Permanently delete your account and ALL data? This cannot be undone.')) return;
+      if (!confirm('This will remove your email, all history, tokens, and Telegram link. Type DELETE to confirm:')) return;
+      const confirmText = prompt('Type DELETE to confirm account deletion:');
+      if (confirmText !== 'DELETE') return;
+
+      try {
+        const res = await fetch(`${API}/users/me`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        alert('Account deleted. You will be redirected.');
+        window.location.href = '/login';
+      } catch (err) {
+        alert('Failed to delete account: ' + err.message);
+      }
+    }
+
+    // ===== Utilities =====
+
+    function escapeHtml(t) {
+      if (!t) return '';
+      const d = document.createElement('div');
+      d.textContent = t;
+      return d.innerHTML;
+    }
+
+    function formatDate(ts) {
+      if (!ts) return '—';
+      return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // ===== Boot =====
+
+    loadSettings();
+  </script>
+
+  <style>
+    /* Auth gate */
+    .auth-gate {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 400px;
+    }
+    .auth-gate__inner {
+      text-align: center; padding: 48px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); max-width: 380px; width: 100%;
+    }
+    .auth-gate__icon { font-size: 40px; margin-bottom: 16px; }
+    .auth-gate__title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .auth-gate__desc { font-size: 12px; color: var(--dim); margin-bottom: 24px; }
+
+    /* Setting row */
+    .setting-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px;
+    }
+    .setting-row__info { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+    .setting-row__label { font-size: 13px; font-weight: 600; }
+    .setting-row__desc { font-size: 11px; color: var(--dim); }
+    .setting-row__value { font-size: 12px; color: var(--accent); }
+
+    /* Select */
+    .select {
+      padding: 6px 10px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text); font-size: 11px; outline: none;
+      cursor: pointer; min-width: 200px;
+    }
+    .select:focus { border-color: var(--accent); }
+
+    /* Toggle */
+    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle__slider {
+      position: absolute; inset: 0; background: var(--border);
+      border-radius: 11px; cursor: pointer; transition: background 0.2s;
+    }
+    .toggle__slider::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 16px; height: 16px; background: var(--text);
+      border-radius: 50%; transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle__slider { background: var(--accent); }
+    .toggle input:checked + .toggle__slider::after { transform: translateX(18px); background: #000; }
+
+    /* Status badge */
+    .status-badge {
+      font-size: 10px; font-weight: 600; padding: 4px 10px;
+      border-radius: 10px; background: var(--surface2);
+      border: 1px solid var(--border); color: var(--dim);
+    }
+    .status-badge--ok { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+    /* Danger section */
+    .section--danger .section__title { color: var(--danger); }
+    .btn--danger-solid { background: var(--danger); border-color: var(--danger); color: #fff; }
+    .btn--danger-solid:hover { background: #ff6b75; border-color: #ff6b75; }
+
+    /* Telegram actions */
+    .telegram-actions { display: flex; gap: 8px; margin-top: 4px; }
+
+    /* Tokens list */
+    .tokens-list { display: flex; flex-direction: column; gap: 8px; }
+    .token-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 16px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .token-row__info { display: flex; flex-direction: column; gap: 3px; }
+    .token-row__name { font-size: 12px; font-weight: 600; }
+    .token-row__meta { font-size: 10px; color: var(--dim); }
+    .token-row__token { font-size: 11px; color: var(--accent); font-family: var(--font); flex-shrink: 0; }
+
+    /* Modal */
+    .modal {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal__backdrop {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+    }
+    .modal__panel {
+      position: relative; z-index: 1;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); width: 520px; max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 64px); display: flex; flex-direction: column;
+    }
+    .modal__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    }
+    .modal__title { font-size: 14px; font-weight: 700; }
+    .modal__close { background: none; border: none; color: var(--dim); font-size: 14px; cursor: pointer; padding: 4px; }
+    .modal__close:hover { color: var(--text); }
+    .modal__body { padding: 20px; overflow-y: auto; flex: 1; }
+    .modal__footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+  </style>
+</body>
+</html>

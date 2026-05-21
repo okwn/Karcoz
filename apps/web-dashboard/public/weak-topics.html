@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weak Topics — KARÇÖZ</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__logo">KARÇÖZ</div>
+    <div class="nav__links">
+      <a href="/dashboard" class="nav__link">Dashboard</a>
+      <a href="/history" class="nav__link">History</a>
+      <a href="/weak-topics" class="nav__link nav__link--active">Weak Topics</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <header class="page-header">
+      <h1 class="page-title">Weak Topics</h1>
+      <p class="page-subtitle">Areas needing more practice</p>
+    </header>
+
+    <div id="loading" class="loading"><div class="loading__spinner"></div><span>Loading...</span></div>
+    <div id="error" class="error" style="display:none"><p id="error-msg"></p></div>
+    <div id="content" style="display:none">
+
+      <div id="weak-topics-list" class="weak-grid"></div>
+
+      <section class="section" style="margin-top:32px">
+        <h2 class="section__title">Priority Review</h2>
+        <p class="section__desc">Topics with lowest confidence scores — prioritize these for practice.</p>
+        <div id="priority-list" class="priority-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const API = 'http://localhost:8100/api';
+    async function loadWeakTopics() {
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('content').style.display = 'none';
+      try {
+        const res = await fetch(`${API}/analytics/weak-topics`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        renderWeakTopics(data.weakTopics ?? []);
+        renderPriority(data.topWeak ?? []);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error-msg').textContent = err.message;
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    function renderWeakTopics(items) {
+      const el = document.getElementById('weak-topics-list');
+      if (!items.length) { el.innerHTML = '<p class="empty">No data yet. Solve some questions first.</p>'; return; }
+      el.innerHTML = items.map(item => {
+        const recBadge = item.recommendation === 'review' ? 'badge--warn' : item.recommendation === 'practice' ? 'badge--mid' : 'badge--ok';
+        return `<div class="weak-card">
+          <div class="weak-card__header">
+            <span class="weak-card__topic">${escapeHtml(item.topic)}</span>
+            <span class="sp-badge ${recBadge}">${item.recommendation}</span>
+          </div>
+          <div class="weak-card__stats">
+            <div class="weak-card__stat">
+              <span class="weak-card__stat-val">${item.totalQuestions}</span>
+              <span class="weak-card__stat-label">Questions</span>
+            </div>
+            <div class="weak-card__stat">
+              <span class="weak-card__stat-val">${Math.round(item.avgConfidence * 100)}%</span>
+              <span class="weak-card__stat-label">Avg Confidence</span>
+            </div>
+            <div class="weak-card__stat">
+              <span class="weak-card__stat-val">${item.lowConfidenceCount}</span>
+              <span class="weak-card__stat-label">Low Conf</span>
+            </div>
+          </div>
+          <div class="weak-card__bar">
+            <div class="weak-card__bar-fill" style="width:${item.weaknessScore * 100}%"></div>
+          </div>
+          <span class="weak-card__score">Weakness: ${Math.round(item.weaknessScore * 100)}%</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderPriority(items) {
+      const el = document.getElementById('priority-list');
+      if (!items.length) { el.innerHTML = '<p class="empty">No priority items yet.</p>'; return; }
+      el.innerHTML = items.map((item, i) => `<div class="priority-item">
+        <span class="priority-item__rank">${i + 1}</span>
+        <span class="priority-item__topic">${escapeHtml(item.topic)}</span>
+        <span class="priority-item__conf">${Math.round(item.avgConfidence * 100)}%</span>
+        <button class="btn btn--sm" onclick="window.practiceTopic('${escapeHtml(item.topic)}')">Practice</button>
+      </div>`).join('');
+    }
+
+    function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+    window.loadWeakTopics = loadWeakTopics;
+    loadWeakTopics();
+  </script>
+</body>
+</html>

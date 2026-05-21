@@ -1,0 +1,482 @@
+[
+  {
+    "id": "tmath_001",
+    "language": "tr",
+    "topic": "temel_aritmetik",
+    "difficulty": "kolay",
+    "questionText": "3x + 7 = 22 denkleminin çözümü nedir?",
+    "options": ["x = 3", "x = 5", "x = 7", "x = 15"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "3x + 7 = 22 denkleminin çözümü nedir?"
+  },
+  {
+    "id": "tmath_002",
+    "language": "tr",
+    "topic": "yuzde",
+    "difficulty": "kolay",
+    "questionText": "80 sayısının %25'i kaçtır?",
+    "options": ["15", "20", "25", "30"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "80 sayısının %25'i kaçtır?"
+  },
+  {
+    "id": "tmath_003",
+    "language": "tr",
+    "topic": "oran",
+    "difficulty": "kolay",
+    "questionText": "2:5 = 6:x ise x kaçtır?",
+    "options": ["10", "12", "15", "18"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "2:5 = 6:x ise x kaçtır?"
+  },
+  {
+    "id": "tmath_004",
+    "language": "tr",
+    "topic": "dizi",
+    "difficulty": "kolay",
+    "questionText": "2, 5, 8, 11, ? sayı dizisinde ? yerine hangi sayı gelmelidir?",
+    "options": ["12", "13", "14", "15"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "2, 5, 8, 11, ? sayı dizisinde ? yerine hangi sayı gelmelidir?"
+  },
+  {
+    "id": "tmath_005",
+    "language": "tr",
+    "topic": "temel_aritmetik",
+    "difficulty": "kolay",
+    "questionText": "48 + 36 = ?",
+    "options": ["72", "82", "84", "94"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "48 + 36 = ?"
+  },
+  {
+    "id": "tmath_006",
+    "language": "tr",
+    "topic": "temel_aritmetik",
+    "difficulty": "kolay",
+    "questionText": "7 × 8 = ?",
+    "options": ["48", "54", "56", "64"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "7 × 8 = ?"
+  },
+  {
+    "id": "tmath_007",
+    "language": "tr",
+    "topic": "yuzde",
+    "difficulty": "orta",
+    "questionText": "200 TL'lik bir ürüne %15 indirim uygulanırsa kaç TL olur?",
+    "options": ["170 TL", "180 TL", "185 TL", "190 TL"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "200 TL'lik bir urune %15 indirim uygulanırsa kaç TL olur?"
+  },
+  {
+    "id": "tmath_008",
+    "language": "tr",
+    "topic": "cebir",
+    "difficulty": "orta",
+    "questionText": "5x - 3 = 17 denklemini çözünüz.",
+    "options": ["x = 3", "x = 4", "x = 5", "x = 6"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "5x - 3 = 17 denklemini çözünüz."
+  },
+  {
+    "id": "tmath_009",
+    "language": "tr",
+    "topic": "dizi",
+    "difficulty": "orta",
+    "questionText": "3, 6, 12, 24, ? dizisinde ? kaçtır?",
+    "options": ["36", "42", "48", "56"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "3, 6, 12, 24, ? dizisinde ? kaçtır?"
+  },
+  {
+    "id": "tmath_010",
+    "language": "tr",
+    "topic": "oran",
+    "difficulty": "orta",
+    "questionText": "3:4 = 9:x denkleminde x kaçtır?",
+    "options": ["8", "10", "12", "16"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "3:4 = 9:x denkleminde x kaçtır?"
+  },
+  {
+    "id": "tmath_011",
+    "language": "tr",
+    "topic": "cebir",
+    "difficulty": "orta",
+    "questionText": "2x + 6 = 20 denkleminin çözümü x = ?",
+    "options": ["5", "6", "7", "8"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "2x + 6 = 20 denkleminin çözümü x = ?"
+  },
+  {
+    "id": "tmath_012",
+    "language": "tr",
+    "topic": "dizi",
+    "difficulty": "orta",
+    "questionText": "1, 4, 9, 16, ? dizisinin bir sonraki terimi kaçtır?",
+    "options": ["20", "24", "25", "30"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "1, 4, 9, 16, ? dizisinin bir sonraki terimi kaçtır?"
+  },
+  {
+    "id": "tmath_013",
+    "language": "tr",
+    "topic": "yuzde",
+    "difficulty": "orta",
+    "questionText": "Bir okulda 800 öğrencinin %60'ı kızdır. Kaç kız öğrenci vardır?",
+    "options": ["420", "450", "480", "520"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "Bir okulda 800 öğrencinin %60'ı kızdır. Kaç kız öğrenci vardır?"
+  },
+  {
+    "id": "tmath_014",
+    "language": "tr",
+    "topic": "temel_aritmetik",
+    "difficulty": "orta",
+    "questionText": "144 ÷ 12 = ?",
+    "options": ["10", "11", "12", "14"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "144 ÷ 12 = ?"
+  },
+  {
+    "id": "tmath_015",
+    "language": "tr",
+    "topic": "dizi",
+    "difficulty": "orta",
+    "questionText": "1, 1, 2, 3, 5, 8, ? Fibonacci dizisinde ? yerine hangi sayı gelir?",
+    "options": ["10", "11", "12", "13"],
+    "correctAnswer": "D",
+    "expectedNormalizedText": "1, 1, 2, 3, 5, 8, ? Fibonacci dizisinde ? yerine hangi sayı gelir?"
+  },
+  {
+    "id": "tmath_016",
+    "language": "tr",
+    "topic": "oran",
+    "difficulty": "orta",
+    "questionText": "Bir orantıda 5:8 = 15:x ise x kaçtır?",
+    "options": ["20", "24", "28", "32"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "Bir orantıda 5:8 = 15:x ise x kaçtır?"
+  },
+  {
+    "id": "tmath_017",
+    "language": "tr",
+    "topic": "cebir",
+    "difficulty": "zor",
+    "questionText": "4x + 9 = 2x + 25 denklemini çözünüz.",
+    "options": ["x = 6", "x = 7", "x = 8", "x = 9"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "4x + 9 = 2x + 25 denklemini çözünüz."
+  },
+  {
+    "id": "tmath_018",
+    "language": "tr",
+    "topic": "yuzde",
+    "difficulty": "zor",
+    "questionText": "Bir ürün önce %20 zamlandı, sonra %20 indirim yapıldı. Son fiyat 480 TL ise başlangıçtaki fiyat kaç TL?",
+    "options": ["500 TL", "520 TL", "600 TL", "720 TL"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "Bir urun once %20 zamlandı, sonra %20 indirim yapıldı. Son fiyat 480 TL ise başlangıçtaki fiyat kaç TL?"
+  },
+  {
+    "id": "tmath_019",
+    "language": "tr",
+    "topic": "dizi",
+    "difficulty": "zor",
+    "questionText": "2, 6, 12, 20, 30, ? dizisinde ? kaçtır?",
+    "options": ["40", "42", "44", "46"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "2, 6, 12, 20, 30, ? dizisinde ? kaçtır?"
+  },
+  {
+    "id": "tmath_020",
+    "language": "tr",
+    "topic": "oran",
+    "difficulty": "zor",
+    "questionText": "Bir işçi bir işi 12 günde bitiriyor. Aynı işi 4 işçi kaç günde bitirir?",
+    "options": ["2 gün", "3 gün", "4 gün", "6 gün"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "Bir işçi bir işi 12 günde bitiriyor. Aynı işi 4 işçi kaç günde bitirir?"
+  },
+  {
+    "id": "tlogic_001",
+    "language": "tr",
+    "topic": "mantik",
+    "difficulty": "kolay",
+    "questionText": "Tüm kediler miyavlar. Minnoş bir kedi midir? Minnoş miyavlar. Bu bir mantık sorusudur.",
+    "options": ["Evet", "Hayır", "Belirsiz", "İlgisiz"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "Tüm kediler miyavlar. Minnoş bir kedi midir? Minnoş miyavlar. Bu bir mantık sorusudur."
+  },
+  {
+    "id": "tlogic_002",
+    "language": "tr",
+    "topic": "mantik",
+    "difficulty": "orta",
+    "questionText": "Eğer yağmur yağıyorsa sokaklar ıslaktır. Sokaklar ıslak değil. Ne sonuç çıkar?",
+    "options": ["Yağmur yağıyor", "Yağmur yağmıyor", "Belirsiz", "Sokaklar kuru"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "Eğer yağmur yağıyorsa sokaklar ıslaktır. Sokaklar ıslak değil. Ne sonuç çıkar?"
+  },
+  {
+    "id": "tlogic_003",
+    "language": "tr",
+    "topic": "mantik",
+    "difficulty": "orta",
+    "questionText": "Ali yaşlıdır. Yaşlı insan bilgedir. Ali bilge değildir. Bu çelişkidir.",
+    "options": ["Doğru", "Yanlış", "Belirsiz", "Çelişki yok"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "Ali yaşlıdır. Yaşlı insan bilgedir. Ali bilge değildir. Bu çelişkidir."
+  },
+  {
+    "id": "tlogic_004",
+    "language": "tr",
+    "topic": "mantik",
+    "difficulty": "zor",
+    "questionText": "Tüm kuşlar uçabilir. Penguenler kuştur. Penguenler uçamaz. Sonuç: Tüm kuşlar uçabilir ifadesi...",
+    "options": ["Doğru", "Yanlış", "Tartışmalı", "Penguenler istisnadır"],
+    "correctAnswer": "D",
+    "expectedNormalizedText": "Tüm kuşlar uçabilir. Penguenler kuştur. Penguenler uçamaz. Sonuç: Tüm kuşlar uçabilir ifadesi..."
+  },
+  {
+    "id": "tlogic_005",
+    "language": "tr",
+    "topic": "mantik",
+    "difficulty": "kolay",
+    "questionText": "Ayşe öğretmendir. Öğretmenler sabırlıdır. Ayşe sabırlıdır.",
+    "options": ["Kesin doğru", "Kesin yanlış", "Olasılıklı doğru", "Bilinemez"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "Ayşe öğretmendir. Öğretmenler sabırlıdır. Ayşe sabırlıdır."
+  },
+  {
+    "id": "tmixed_001",
+    "language": "tr",
+    "topic": "genel",
+    "difficulty": "kolay",
+    "questionText": "İstanbul hangi yıl fethedilmiştir?",
+    "options": ["1453", "1923", "1071", "1915"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "İstanbul hangi yıl fethedilmiştir?"
+  },
+  {
+    "id": "tmixed_002",
+    "language": "tr",
+    "topic": "fen",
+    "difficulty": "kolay",
+    "questionText": "Bir iletkenin direnci hangi faktörlere bağlıdır?",
+    "options": ["Uzunluk, kesit alanı, özdirenç", "Renk, şekil, ağırlık", "Sıcaklık, renk, şekil", "Akım, gerilim, güç"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "Bir iletkenin direnci hangi faktörlere bağlıdır?"
+  },
+  {
+    "id": "tmixed_003",
+    "language": "tr",
+    "topic": "matematik",
+    "difficulty": "orta",
+    "questionText": "Bir üçgenin iç açıları toplamı kaç derecedir?",
+    "options": ["90°", "180°", "270°", "360°"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "Bir üçgenin iç açıları toplamı kaç derecedir?"
+  },
+  {
+    "id": "tmixed_004",
+    "language": "tr",
+    "topic": "fen",
+    "difficulty": "orta",
+    "questionText": "Suyun kaynama noktası kaç °C'dir?",
+    "options": ["50°C", "80°C", "100°C", "120°C"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "Suın kaynama noktası kaç °C'dir?"
+  },
+  {
+    "id": "tmixed_005",
+    "language": "tr",
+    "topic": "tarih",
+    "difficulty": "orta",
+    "questionText": "Kurtuluş Savaşımız hangi yıl başlamıştır?",
+    "options": ["1919", "1920", "1922", "1923"],
+    "correctAnswer": "A",
+    "expectedNormalizedText": "Kurtuluş Savaşımız hangi yıl başlamıştır?"
+  },
+  {
+    "id": "tmixed_006",
+    "language": "tr",
+    "topic": "matematik",
+    "difficulty": "kolay",
+    "questionText": "12 + 8 × 3 - 4 ÷ 2 = ?",
+    "options": ["28", "34", "38", "44"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "12 + 8 × 3 - 4 ÷ 2 = ?"
+  },
+  {
+    "id": "tmixed_007",
+    "language": "tr",
+    "topic": "cebir",
+    "difficulty": "kolay",
+    "questionText": "x + 5 = 12 ise x kaçtır?",
+    "options": ["5", "6", "7", "8"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "x + 5 = 12 ise x kaçtır?"
+  },
+  {
+    "id": "tmixed_008",
+    "language": "tr",
+    "topic": "yuzde",
+    "difficulty": "kolay",
+    "questionText": "50'nin %10'u kaçtır?",
+    "options": ["3", "4", "5", "6"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "50'nin %10'u kaçtır?"
+  },
+  {
+    "id": "tmixed_009",
+    "language": "tr",
+    "topic": "oran",
+    "difficulty": "kolay",
+    "questionText": "1:2 oranındaki karışımda 3 litre alkol varsa toplam karışım kaç litredir?",
+    "options": ["4 L", "5 L", "6 L", "9 L"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "1:2 oranındaki karışımda 3 litre alkol varsa toplam karışım kaç litredir?"
+  },
+  {
+    "id": "tmixed_010",
+    "language": "tr",
+    "topic": "dizi",
+    "difficulty": "kolay",
+    "questionText": "5, 10, 20, 40, ? dizisinde ? kaçtır?",
+    "options": ["50", "60", "70", "80"],
+    "correctAnswer": "D",
+    "expectedNormalizedText": "5, 10, 20, 40, ? dizisinde ? kaçtır?"
+  },
+  {
+    "id": "emath_001",
+    "language": "en",
+    "topic": "percentage",
+    "difficulty": "easy",
+    "questionText": "What is 15% of 200?",
+    "options": ["25", "30", "35", "40"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "What is 15% of 200?"
+  },
+  {
+    "id": "emath_002",
+    "language": "en",
+    "topic": "algebra",
+    "difficulty": "easy",
+    "questionText": "If 3x + 9 = 24, what is x?",
+    "options": ["3", "4", "5", "6"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "If 3x + 9 = 24, what is x?"
+  },
+  {
+    "id": "emath_003",
+    "language": "en",
+    "topic": "sequence",
+    "difficulty": "easy",
+    "questionText": "Find the next term: 2, 4, 8, 16, ?",
+    "options": ["20", "24", "32", "64"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "Find the next term: 2, 4, 8, 16, ?"
+  },
+  {
+    "id": "emath_004",
+    "language": "en",
+    "topic": "ratio",
+    "difficulty": "easy",
+    "questionText": "If a:b = 3:4 and a = 15, what is b?",
+    "options": ["18", "20", "24", "28"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "If a:b = 3:4 and a = 15, what is b?"
+  },
+  {
+    "id": "emath_005",
+    "language": "en",
+    "topic": "arithmetic",
+    "difficulty": "easy",
+    "questionText": "What is 125 × 8?",
+    "options": ["900", "1000", "1100", "1200"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "What is 125 × 8?"
+  },
+  {
+    "id": "emath_006",
+    "language": "en",
+    "topic": "percentage",
+    "difficulty": "medium",
+    "questionText": "A shirt costs $80. It is discounted by 25%. What is the sale price?",
+    "options": ["$50", "$55", "$60", "$65"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "A shirt costs $80. It is discounted by 25%. What is the sale price?"
+  },
+  {
+    "id": "emath_007",
+    "language": "en",
+    "topic": "algebra",
+    "difficulty": "medium",
+    "questionText": "Solve: 2(x - 3) = 14",
+    "options": ["x = 5", "x = 7", "x = 10", "x = 12"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "Solve: 2(x - 3) = 14"
+  },
+  {
+    "id": "emath_008",
+    "language": "en",
+    "topic": "sequence",
+    "difficulty": "medium",
+    "questionText": "What comes next: 1, 4, 9, 16, 25, ?",
+    "options": ["30", "34", "36", "49"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "What comes next: 1, 4, 9, 16, 25, ?"
+  },
+  {
+    "id": "emath_009",
+    "language": "en",
+    "topic": "ratio",
+    "difficulty": "medium",
+    "questionText": "The ratio of boys to girls is 3:5. If there are 24 boys, how many girls are there?",
+    "options": ["30", "35", "40", "45"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "The ratio of boys to girls is 3:5. If there are 24 boys, how many girls are there?"
+  },
+  {
+    "id": "emath_010",
+    "language": "en",
+    "topic": "arithmetic",
+    "difficulty": "medium",
+    "questionText": "What is 15% of 350 plus 25% of 200?",
+    "options": ["97.5", "102.5", "107.5", "112.5"],
+    "correctAnswer": "B",
+    "expectedNormalizedText": "What is 15% of 350 plus 25% of 200?"
+  },
+  {
+    "id": "emath_011",
+    "language": "en",
+    "topic": "sequence",
+    "difficulty": "medium",
+    "questionText": "1, 1, 2, 3, 5, 8, ? - Fibonacci sequence, what is next?",
+    "options": ["10", "11", "12", "13"],
+    "correctAnswer": "D",
+    "expectedNormalizedText": "1, 1, 2, 3, 5, 8, ? - Fibonacci sequence, what is next?"
+  },
+  {
+    "id": "emath_012",
+    "language": "en",
+    "topic": "percentage",
+    "difficulty": "hard",
+    "questionText": "A price increased by 20% then decreased by 20%. If the final price is $96, what was the original price?",
+    "options": ["$90", "$96", "$100", "$120"],
+    "correctAnswer": "C",
+    "expectedNormalizedText": "A price increased by 20% then decreased by 20%. If the final price is $96, what was the original price?"
+  },
+  {
+    "id": "emath_013",
+    "language": "en",
+    "topic": "algebra",
+    "difficulty": "hard",
+    "questionText": "If 5x - 3 = 3x + 11, find the value of 2x",
+    "options": ["7", "10", "12", "14"],
+    "correctAnswer": "D",
+    "expectedNormalizedText": "If 5x - 3 = 3x + 11, find the value of 2x"
+  }
+]

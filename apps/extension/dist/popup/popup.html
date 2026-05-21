@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=320">
+  <title>KARÇÖZ</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <header class="popup__header">
+      <span class="popup__logo">KARÇÖZ</span>
+      <div class="popup__status">
+        <span class="popup__api-badge popup__api-badge--warn" id="apiBadge">
+          <span class="popup__api-badge-dot"></span>
+          <span id="apiBadgeText">API: —</span>
+        </span>
+      </div>
+    </header>
+
+    <div class="popup__study-status">
+      <span class="popup__status-dot" id="statusDot"></span>
+      <span id="statusText">Ready</span>
+    </div>
+
+    <div class="popup__actions">
+      <label class="popup__toggle">
+        <div class="popup__toggle-label">
+          <div class="popup__action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <span>Study Scan Mode</span>
+        </div>
+        <div class="popup__toggle-switch" id="studyModeToggle" role="switch" aria-checked="false" tabindex="0"></div>
+      </label>
+
+      <button class="popup__action" id="captureBtn" data-action="CAPTURE_AREA">
+        <div class="popup__action-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 9h6v6H9z"/>
+          </svg>
+        </div>
+        <div class="popup__action-text">
+          Capture Selected Area
+          <span class="popup__action-desc">Draw rectangle to capture</span>
+        </div>
+        <span class="popup__action-shortcut">⌘⇧C</span>
+      </button>
+
+      <button class="popup__action" id="scanBtn" data-action="SCAN_PAGE">
+        <div class="popup__action-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M3 9h18M9 21V9"/>
+          </svg>
+        </div>
+        <div class="popup__action-text">
+          Scan Visible Page
+          <span class="popup__action-desc">Capture entire visible area</span>
+        </div>
+        <span class="popup__action-shortcut">⌘⇧P</span>
+      </button>
+
+      <div class="popup__divider"></div>
+
+      <button class="popup__action" id="detailsBtn" data-action="OPEN_DETAILS">
+        <div class="popup__action-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+          </svg>
+        </div>
+        <div class="popup__action-text">
+          Details
+          <span class="popup__action-desc">View full explanation</span>
+        </div>
+      </button>
+
+      <button class="popup__action" id="historyBtn" data-action="OPEN_HISTORY">
+        <div class="popup__action-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 8v4l3 3M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/>
+          </svg>
+        </div>
+        <div class="popup__action-text">
+          History
+          <span class="popup__action-desc">View saved captures</span>
+        </div>
+      </button>
+
+      <button class="popup__action" id="settingsBtn" data-action="OPEN_SETTINGS">
+        <div class="popup__action-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+        <div class="popup__action-text">
+          Settings
+          <span class="popup__action-desc">Configure KARÇÖZ</span>
+        </div>
+      </button>
+    </div>
+
+    <footer class="popup__footer">
+      <span class="popup__version">v0.1.0</span>
+      <span class="popup__version">⌘⇧K to open</span>
+    </footer>
+  </div>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

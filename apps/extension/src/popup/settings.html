@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=320">
+  <title>KARÇÖZ Settings</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="settings">
+    <header class="settings__header">
+      <span class="settings__logo">KARÇÖZ</span>
+      <span class="settings__title">Settings</span>
+    </header>
+
+    <div class="settings__content">
+      <section class="settings__section">
+        <h3 class="settings__section-title">API Configuration</h3>
+
+        <div class="settings__field">
+          <label class="settings__label" for="apiBaseUrl">API Base URL</label>
+          <input
+            type="url"
+            id="apiBaseUrl"
+            class="settings__input"
+            placeholder="http://localhost:8132"
+            spellcheck="false"
+            autocomplete="off"
+          >
+          <p class="settings__hint">The backend server URL. Include the port if not 80/443.</p>
+        </div>
+
+        <div class="settings__field">
+          <div class="settings__checkbox-row">
+            <input type="checkbox" id="useMockApi" class="settings__checkbox">
+            <label for="useMockApi" class="settings__checkbox-label">
+              Use mock API (disable real backend calls)
+            </label>
+          </div>
+          <p class="settings__hint">Enable this only for development or offline testing.</p>
+        </div>
+
+        <button class="settings__btn" id="testConnectionBtn">
+          <span class="settings__btn-text">Test API Connection</span>
+        </button>
+
+        <div class="settings__status" id="connectionStatus" hidden>
+          <span class="settings__status-dot" id="statusDot"></span>
+          <span class="settings__status-text" id="statusText"></span>
+        </div>
+      </section>
+
+      <section class="settings__section">
+        <h3 class="settings__section-title">Account</h3>
+        <div class="settings__field">
+          <div class="settings__token-row">
+            <span class="settings__token-label">Extension Token</span>
+            <span class="settings__token-value" id="tokenStatus">Not connected</span>
+          </div>
+          <label class="settings__label" for="extensionTokenInput">Paste Extension Token</label>
+          <input
+            type="text"
+            id="extensionTokenInput"
+            class="settings__input"
+            placeholder="kext_xxxxxxxxxxxx..."
+            spellcheck="false"
+            autocomplete="off"
+          >
+          <p class="settings__hint">Get your token from the <a href="#" id="openDashboardLink">dashboard</a> (Settings → Extension Tokens).</p>
+          <button class="settings__btn" id="saveTokenBtn">
+            <span class="settings__btn-text">Save Token</span>
+          </button>
+          <button class="settings__btn settings__btn--danger" id="clearTokenBtn" hidden>
+            Disconnect Account
+          </button>
+        </div>
+      </section>
+
+      <section class="settings__section">
+        <h3 class="settings__section-title">About</h3>
+        <p class="settings__about">KARÇÖZ v0.1.0<br>AI-powered study assistant</p>
+      </section>
+    </div>
+  </div>
+  <script src="settings.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing — KARÇÖZ</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .billing-page { max-width: 700px; }
+    .billing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .billing-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .billing-card__title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); margin-bottom: 16px; }
+    .plan-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .plan-badge--free { background: var(--surface2); color: var(--dim); }
+    .plan-badge--pro { background: var(--accent-dim); color: var(--accent); }
+    .plan-badge--team { background: #8b5cf622; color: #a78bfa; }
+    .plan-name { font-size: 20px; font-weight: 700; margin: 8px 0 4px 0; color: var(--text); }
+    .plan-price { font-size: 13px; color: var(--dim); }
+    .plan-price span { font-size: 28px; font-weight: 700; color: var(--accent); }
+    .quota-bar { margin-bottom: 12px; }
+    .quota-bar__label { display: flex; justify-content: space-between; font-size: 11px; color: var(--dim); margin-bottom: 6px; }
+    .quota-bar__track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .quota-bar__fill { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .quota-bar__fill--ok { background: var(--accent); }
+    .quota-bar__fill--warn { background: var(--warn); }
+    .quota-bar__fill--danger { background: var(--danger); }
+    .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+    .feature-list li { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text); }
+    .feature-list li::before { content: '✓'; color: var(--accent); font-weight: 700; }
+    .upgrade-btn { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: var(--radius); color: #000; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 16px; }
+    .upgrade-btn:hover { background: #00e8bb; }
+    .upgrade-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .not-configured { padding: 16px; background: var(--surface); border: 1px solid var(--warn); border-radius: var(--radius); text-align: center; color: var(--warn); font-size: 12px; margin-top: 16px; }
+    .not-configured::before { content: 'ℹ️ '; }
+    .cancel-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .stripe-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: var(--dim); margin-top: 8px; }
+    .stripe-badge svg { width: 40px; height: auto; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__logo">KARÇÖZ</div>
+    <div class="nav__links">
+      <a href="/dashboard" class="nav__link">Dashboard</a>
+      <a href="/history" class="nav__link">History</a>
+      <a href="/weak-topics" class="nav__link">Weak Topics</a>
+      <a href="/practice" class="nav__link">Practice</a>
+      <a href="/settings" class="nav__link">Settings</a>
+      <a href="/telegram" class="nav__link">Telegram</a>
+      <a href="/billing" class="nav__link nav__link--active">Billing</a>
+    </div>
+  </nav>
+
+  <main class="main billing-page">
+    <header class="page-header">
+      <h1 class="page-title">Billing & Plan</h1>
+      <p class="page-subtitle">Manage your subscription and usage quota</p>
+    </header>
+
+    <div id="loading" class="loading"><div class="loading__spinner"></div><span>Loading...</span></div>
+    <div id="error" class="error" style="display:none"><p id="error-msg"></p></div>
+
+    <div id="content" style="display:none">
+      <div class="billing-grid">
+
+        <!-- Current Plan -->
+        <div class="billing-card">
+          <div class="billing-card__title">Current Plan</div>
+          <span class="plan-badge" id="plan-badge">—</span>
+          <div class="plan-name" id="plan-name">—</div>
+          <div class="plan-price" id="plan-price">—</div>
+          <ul class="feature-list" id="plan-features"></ul>
+          <div id="cancel-section" style="display:none" class="cancel-section">
+            <button class="btn btn--danger btn--sm" id="cancel-btn">Cancel Subscription</button>
+          </div>
+        </div>
+
+        <!-- Usage Quota -->
+        <div class="billing-card">
+          <div class="billing-card__title">Usage This Period</div>
+          <div id="quota-daily" class="quota-bar">
+            <div class="quota-bar__label"><span>Daily solves</span><span id="quota-daily-label">— / —</span></div>
+            <div class="quota-bar__track"><div class="quota-bar__fill" id="quota-daily-fill"></div></div>
+          </div>
+          <div id="quota-monthly" class="quota-bar">
+            <div class="quota-bar__label"><span>Monthly solves</span><span id="quota-monthly-label">— / —</span></div>
+            <div class="quota-bar__track"><div class="quota-bar__fill" id="quota-monthly-fill"></div></div>
+          </div>
+          <div class="stripe-badge" id="reset-info">Resets daily at midnight UTC</div>
+        </div>
+
+      </div>
+
+      <!-- Available Plans -->
+      <div class="billing-card" style="margin-top:16px">
+        <div class="billing-card__title">Available Plans</div>
+        <div id="available-plans" class="billing-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px"></div>
+        <div class="not-configured" id="checkout-notice" style="display:none"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/api-client.js"></script>
+  <script>
+    let checkoutAvailable = false;
+
+    async function init() {
+      if (!await window.KARCOZ.requireAuth()) return;
+
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('content').style.display = 'none';
+
+      try {
+        const billing = await window.KARCOZ.getBillingPlan();
+        checkoutAvailable = billing.checkoutAvailable !== false;
+
+        renderBilling(billing);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error-msg').textContent = err.message;
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    function renderBilling(billing) {
+      const { subscription, usage, availablePlans } = billing;
+
+      // Current plan badge
+      const plan = subscription?.plan ?? 'free';
+      const planData = availablePlans.find(p => p.id === plan) ?? availablePlans[0];
+
+      document.getElementById('plan-badge').textContent = plan.toUpperCase();
+      document.getElementById('plan-badge').className = `plan-badge plan-badge--${plan}`;
+      document.getElementById('plan-name').textContent = planData?.name ?? plan;
+      document.getElementById('plan-price').innerHTML = planData?.price.monthly === 0
+        ? '<span>$0</span>/month'
+        : `<span>$${planData?.price.monthly}</span>/month`;
+
+      if (planData?.features) {
+        document.getElementById('plan-features').innerHTML =
+          planData.features.map(f => `<li>${window.KARCOZ.escapeHtml(f)}</li>`).join('');
+      }
+
+      // Cancel section for active non-free subscriptions
+      if (plan !== 'free' && subscription?.status === 'active') {
+        document.getElementById('cancel-section').style.display = 'block';
+        document.getElementById('cancel-btn').addEventListener('click', cancelSubscription);
+      }
+
+      // Usage quota bars
+      const usedDaily = usage?.usedDaily ?? 0;
+      const limitDaily = usage?.limitDaily ?? 0;
+      const usedMonthly = usage?.usedMonthly ?? 0;
+      const limitMonthly = usage?.limitMonthly ?? 0;
+
+      const dailyPct = limitDaily > 0 ? Math.min((usedDaily / limitDaily) * 100, 100) : 0;
+      const monthlyPct = limitMonthly > 0 ? Math.min((usedMonthly / limitMonthly) * 100, 100) : 0;
+
+      document.getElementById('quota-daily-label').textContent = `${usedDaily} / ${limitDaily}`;
+      document.getElementById('quota-daily-fill').style.width = `${dailyPct}%`;
+      document.getElementById('quota-daily-fill').className =
+        `quota-bar__fill quota-bar__fill--${dailyPct > 90 ? 'danger' : dailyPct > 70 ? 'warn' : 'ok'}`;
+
+      document.getElementById('quota-monthly-label').textContent = `${usedMonthly} / ${limitMonthly}`;
+      document.getElementById('quota-monthly-fill').style.width = `${monthlyPct}%`;
+      document.getElementById('quota-monthly-fill').className =
+        `quota-bar__fill quota-bar__fill--${monthlyPct > 90 ? 'danger' : monthlyPct > 70 ? 'warn' : 'ok'}`;
+
+      // Available plans
+      const plansEl = document.getElementById('available-plans');
+      plansEl.innerHTML = availablePlans.map(p => `
+        <div class="billing-card" style="padding:16px">
+          <span class="plan-badge plan-badge--${p.id}">${p.id}</span>
+          <div style="font-size:14px;font-weight:700;margin:8px 0 4px 0;color:var(--text)">${window.KARCOZ.escapeHtml(p.name)}</div>
+          <div style="font-size:11px;color:var(--dim);margin-bottom:12px">$${p.price.monthly}/mo</div>
+          <ul class="feature-list" style="font-size:11px">
+            ${p.features.slice(0, 3).map(f => `<li style="font-size:11px">${window.KARCOZ.escapeHtml(f)}</li>`).join('')}
+          </ul>
+          ${p.id === 'free' ? `<button class="upgrade-btn" disabled style="opacity:0.4">Current Plan</button>`
+            : !checkoutAvailable ? `<button class="upgrade-btn" disabled style="opacity:0.4">Coming Soon</button>`
+            : `<button class="upgrade-btn" onclick="upgradeToPlan('${p.id}')">Upgrade to ${window.KARCOZ.escapeHtml(p.name)}</button>`}
+        </div>
+      `).join('');
+
+      // Checkout notice
+      const notice = document.getElementById('checkout-notice');
+      if (!checkoutAvailable) {
+        notice.textContent = 'Payment processing is not yet configured. Upgrade buttons will be available once Stripe is set up.';
+        notice.style.display = 'block';
+      } else {
+        notice.style.display = 'none';
+      }
+    }
+
+    async function upgradeToPlan(planId) {
+      const notice = document.getElementById('checkout-notice');
+      notice.style.display = 'block';
+      notice.textContent = 'Redirecting to payment provider...';
+      notice.style.color = 'var(--accent)';
+
+      try {
+        const res = await window.KARCOZ.apiFetch('/billing/checkout', {
+          method: 'POST',
+          body: JSON.stringify({ plan: planId, provider: 'stripe' }),
+        });
+
+        if (res.url) {
+          window.location.href = res.url;
+        }
+      } catch (err) {
+        if (err.status === 503) {
+          notice.textContent = 'Payment processing is not yet configured. Please try again later.';
+        } else {
+          notice.textContent = 'Checkout failed. Please try again.';
+        }
+        notice.style.color = 'var(--warn)';
+        window.KARCOZ.showToast('Checkout failed: ' + err.message, 'error');
+      }
+    }
+
+    async function cancelSubscription() {
+      if (!confirm('Cancel your subscription? You will lose access to premium features at the end of the billing period.')) return;
+
+      try {
+        await window.KARCOZ.cancelBilling();
+        window.KARCOZ.showToast('Subscription canceled. You retain access until the end of the billing period.', 'info');
+        init();
+      } catch (err) {
+        window.KARCOZ.showToast('Cancel failed: ' + err.message, 'error');
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# Telegram bot runs as a separate container but builds from the API context.
+# Build context: ../apps/api (from docker-compose)
+# Compiles: apps/api/src/telegram-bot.ts → dist/telegram-bot.js
+FROM node:22-alpine
+
+RUN addgroup -S karcoz && adduser -S karcoz -G karcoz
+
+WORKDIR /app
+
+# Copy package files and install
+COPY package*.json ./
+RUN npm install --ignore-scripts
+
+# Copy tsconfig and Prisma client generator
+COPY tsconfig.json ./
+COPY prisma/ ./prisma/
+RUN npx prisma generate
+
+# Copy and compile TypeScript source
+COPY src/ ./src/
+RUN npx tsc
+
+RUN chown -R karcoz:karcoz /app
+
+USER karcoz
+
+ENV NODE_ENV=production
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
+  CMD wget -qO- http://localhost:8080/health || exit 1
+
+CMD ["node", "dist/telegram-bot.js"]

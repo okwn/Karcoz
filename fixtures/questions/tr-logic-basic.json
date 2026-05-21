@@ -1,0 +1,15 @@
+{
+  "id": "tr-logic-basic-001",
+  "questionText": "Tüm kuşlar uçabilir. Penguenler bir kuş türüdür. Penguenler uçamaz. Bu bilgilere dayanarak aşağıdakilerden hangisi kesinlikle doğrudur?",
+  "options": [
+    { "label": "A) Bazı kuşlar uçabilir", "value": "A", "order": 0 },
+    { "label": "B) Tüm kuşlar penguen değildir", "value": "B", "order": 1 },
+    { "label": "C) Bazı uçabilen kuşlar penguendir", "value": "C", "order": 2 },
+    { "label": "D) Hiçbir penguen uçamaz", "value": "D", "order": 3 }
+  ],
+  "correctAnswer": "D) Hiçbir penguen uçamaz",
+  "explanation": "Verilen öncüllerden penguenlerin uçamadığı kesin olarak çıkarılabilir. 'Tüm kuşlar uçabilir' ifadesiyle 'Penguenler uçamaz' ifadesi çelişir, bu nedenle penguenlerin kuş olmadığı sonucu çıkarılamaz. Doğru sonuç 'Hiçbir penguen uçamaz' ifadesidir.",
+  "difficulty": "medium",
+  "topic": "Mantık / Çıkarım",
+  "language": "tr"
+}

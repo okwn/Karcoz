@@ -1,0 +1,33 @@
+{
+  "name": "@karcoz/eval",
+  "version": "0.1.0",
+  "description": "KARÇÖZ evaluation system — OCR and solving quality metrics",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "eval": "tsx scripts/run-eval.ts",
+    "eval:solver": "tsx scripts/run-eval.ts --scope solver",
+    "eval:ocr": "tsx scripts/run-eval.ts --scope ocr",
+    "eval:report": "tsx scripts/report-eval.ts"
+  },
+  "dependencies": {
+    "@karcoz/ai-core": "file:../packages/ai-core",
+    "@karcoz/ocr-core": "file:../packages/ocr-core",
+    "@karcoz/shared": "file:../packages/shared",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.7.0"
+  }
+}

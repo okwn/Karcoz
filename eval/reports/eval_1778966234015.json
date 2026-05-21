@@ -1,0 +1,482 @@
+{
+  "evalId": "eval_1778966234015",
+  "runAt": "2026-05-16T21:17:14.015Z",
+  "scope": "full",
+  "datasetName": "combined",
+  "datasetSize": 5,
+  "totalPassed": 5,
+  "overallPassRate": 1,
+  "dimensionSummaries": [
+    {
+      "dimension": "ocr",
+      "total": 5,
+      "passed": 3,
+      "rate": 0.6,
+      "avgLatencyMs": 553
+    },
+    {
+      "dimension": "options",
+      "total": 5,
+      "passed": 0,
+      "rate": 0,
+      "avgLatencyMs": 553
+    },
+    {
+      "dimension": "topic",
+      "total": 5,
+      "passed": 5,
+      "rate": 1,
+      "avgLatencyMs": 553
+    },
+    {
+      "dimension": "answer",
+      "total": 5,
+      "passed": 5,
+      "rate": 1,
+      "avgLatencyMs": 553
+    },
+    {
+      "dimension": "confidence",
+      "total": 5,
+      "passed": 0,
+      "rate": 0,
+      "avgLatencyMs": 553
+    },
+    {
+      "dimension": "latency",
+      "total": 5,
+      "passed": 5,
+      "rate": 1,
+      "avgLatencyMs": 553
+    },
+    {
+      "dimension": "explanation",
+      "total": 5,
+      "passed": 5,
+      "rate": 1,
+      "avgLatencyMs": 553
+    }
+  ],
+  "latencyStats": {
+    "meanMs": 553,
+    "p50Ms": 553,
+    "p95Ms": 553,
+    "p99Ms": 553,
+    "maxMs": 553
+  },
+  "confidenceStats": {
+    "mean": 0.93,
+    "wellCalibrated": 0,
+    "totalWithConfidence": 5
+  },
+  "results": [
+    {
+      "datasetEntryId": "tmath_001",
+      "timestamp": "2026-05-16T21:17:11.796Z",
+      "ocrScore": {
+        "rawTextMatch": false,
+        "normalizedTextSimilarity": 0.5,
+        "characterAccuracy": 0.29729729729729726,
+        "missingTokens": [],
+        "extraTokens": [
+          "denkleminin",
+          "çözümü",
+          "nedir"
+        ]
+      },
+      "optionParseScore": {
+        "optionsExtracted": 4,
+        "optionsExpected": 4,
+        "optionsMatched": 0,
+        "optionAccuracy": 0,
+        "matchedOptions": [
+          {
+            "expected": "x = 3",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "x = 5",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "x = 7",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "x = 15",
+            "actual": "MISSING",
+            "labelCorrect": false
+          }
+        ]
+      },
+      "topicScore": {
+        "topicMatch": true,
+        "expectedTopic": "temel_aritmetik",
+        "actualTopic": "temel_aritmetik"
+      },
+      "answerScore": {
+        "exactMatch": true,
+        "labelMatch": true,
+        "correctAnswer": "B",
+        "givenAnswer": "B) x = 5"
+      },
+      "confidenceScore": {
+        "confidenceScore": 0.93,
+        "isWellCalibrated": false,
+        "calibrationError": 0.2300000000000001
+      },
+      "latencyScore": {
+        "extractionLatencyMs": 151,
+        "solvingLatencyMs": 400,
+        "totalLatencyMs": 553,
+        "withinSla": true
+      },
+      "explanationScore": {
+        "hasExplanation": true,
+        "explanationLength": 18,
+        "explanationQualityHint": "minimal"
+      },
+      "passed": true,
+      "passedDimensions": [
+        "topic",
+        "answer",
+        "latency",
+        "explanation"
+      ],
+      "failedDimensions": [
+        "ocr",
+        "options",
+        "confidence"
+      ]
+    },
+    {
+      "datasetEntryId": "tlogic_001",
+      "timestamp": "2026-05-16T21:17:12.352Z",
+      "ocrScore": {
+        "rawTextMatch": false,
+        "normalizedTextSimilarity": 0.3,
+        "characterAccuracy": 0.2325581395348837,
+        "missingTokens": [],
+        "extraTokens": [
+          "minnoş",
+          "bir",
+          "kedi",
+          "midir",
+          "minnoş",
+          "bu",
+          "bir",
+          "mantık",
+          "sorusudur"
+        ]
+      },
+      "optionParseScore": {
+        "optionsExtracted": 4,
+        "optionsExpected": 4,
+        "optionsMatched": 0,
+        "optionAccuracy": 0,
+        "matchedOptions": [
+          {
+            "expected": "Evet",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "Hayır",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "Belirsiz",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "İlgisiz",
+            "actual": "MISSING",
+            "labelCorrect": false
+          }
+        ]
+      },
+      "topicScore": {
+        "topicMatch": true,
+        "expectedTopic": "mantik",
+        "actualTopic": "mantik"
+      },
+      "answerScore": {
+        "exactMatch": true,
+        "labelMatch": true,
+        "correctAnswer": "A",
+        "givenAnswer": "A) Evet"
+      },
+      "confidenceScore": {
+        "confidenceScore": 0.93,
+        "isWellCalibrated": false,
+        "calibrationError": 0.2300000000000001
+      },
+      "latencyScore": {
+        "extractionLatencyMs": 151,
+        "solvingLatencyMs": 400,
+        "totalLatencyMs": 553,
+        "withinSla": true
+      },
+      "explanationScore": {
+        "hasExplanation": true,
+        "explanationLength": 16,
+        "explanationQualityHint": "minimal"
+      },
+      "passed": true,
+      "passedDimensions": [
+        "topic",
+        "answer",
+        "latency",
+        "explanation"
+      ],
+      "failedDimensions": [
+        "ocr",
+        "options",
+        "confidence"
+      ]
+    },
+    {
+      "datasetEntryId": "mixed_001",
+      "timestamp": "2026-05-16T21:17:12.907Z",
+      "ocrScore": {
+        "rawTextMatch": false,
+        "normalizedTextSimilarity": 0.8333333333333334,
+        "characterAccuracy": 0.8958333333333334,
+        "missingTokens": [],
+        "extraTokens": [
+          "bir"
+        ]
+      },
+      "optionParseScore": {
+        "optionsExtracted": 4,
+        "optionsExpected": 4,
+        "optionsMatched": 0,
+        "optionAccuracy": 0,
+        "matchedOptions": [
+          {
+            "expected": "Uzunluk, kesit alanı, özdirenç",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "Renk, şekil, ağırlık",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "Sıcaklık, renk, şekil",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "Akım, gerilim, güç",
+            "actual": "MISSING",
+            "labelCorrect": false
+          }
+        ]
+      },
+      "topicScore": {
+        "topicMatch": true,
+        "expectedTopic": "fen",
+        "actualTopic": "fen"
+      },
+      "answerScore": {
+        "exactMatch": true,
+        "labelMatch": true,
+        "correctAnswer": "A",
+        "givenAnswer": "A) Uzunluk, kesit alanı, özdirenç"
+      },
+      "confidenceScore": {
+        "confidenceScore": 0.93,
+        "isWellCalibrated": false,
+        "calibrationError": 0.2300000000000001
+      },
+      "latencyScore": {
+        "extractionLatencyMs": 151,
+        "solvingLatencyMs": 400,
+        "totalLatencyMs": 553,
+        "withinSla": true
+      },
+      "explanationScore": {
+        "hasExplanation": true,
+        "explanationLength": 19,
+        "explanationQualityHint": "minimal"
+      },
+      "passed": true,
+      "passedDimensions": [
+        "ocr",
+        "topic",
+        "answer",
+        "latency",
+        "explanation"
+      ],
+      "failedDimensions": [
+        "options",
+        "confidence"
+      ]
+    },
+    {
+      "datasetEntryId": "mixed_002",
+      "timestamp": "2026-05-16T21:17:13.461Z",
+      "ocrScore": {
+        "rawTextMatch": false,
+        "normalizedTextSimilarity": 1,
+        "characterAccuracy": 0.9705882352941176,
+        "missingTokens": [],
+        "extraTokens": []
+      },
+      "optionParseScore": {
+        "optionsExtracted": 4,
+        "optionsExpected": 4,
+        "optionsMatched": 0,
+        "optionAccuracy": 0,
+        "matchedOptions": [
+          {
+            "expected": "1453",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "1923",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "1071",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "1915",
+            "actual": "MISSING",
+            "labelCorrect": false
+          }
+        ]
+      },
+      "topicScore": {
+        "topicMatch": true,
+        "expectedTopic": "tarih",
+        "actualTopic": "tarih"
+      },
+      "answerScore": {
+        "exactMatch": true,
+        "labelMatch": true,
+        "correctAnswer": "A",
+        "givenAnswer": "A) 1453"
+      },
+      "confidenceScore": {
+        "confidenceScore": 0.93,
+        "isWellCalibrated": false,
+        "calibrationError": 0.2300000000000001
+      },
+      "latencyScore": {
+        "extractionLatencyMs": 151,
+        "solvingLatencyMs": 400,
+        "totalLatencyMs": 553,
+        "withinSla": true
+      },
+      "explanationScore": {
+        "hasExplanation": true,
+        "explanationLength": 16,
+        "explanationQualityHint": "minimal"
+      },
+      "passed": true,
+      "passedDimensions": [
+        "ocr",
+        "topic",
+        "answer",
+        "latency",
+        "explanation"
+      ],
+      "failedDimensions": [
+        "options",
+        "confidence"
+      ]
+    },
+    {
+      "datasetEntryId": "mixed_003",
+      "timestamp": "2026-05-16T21:17:14.014Z",
+      "ocrScore": {
+        "rawTextMatch": false,
+        "normalizedTextSimilarity": 0.8571428571428571,
+        "characterAccuracy": 0.8888888888888888,
+        "missingTokens": [],
+        "extraTokens": [
+          "bir"
+        ]
+      },
+      "optionParseScore": {
+        "optionsExtracted": 4,
+        "optionsExpected": 4,
+        "optionsMatched": 0,
+        "optionAccuracy": 0,
+        "matchedOptions": [
+          {
+            "expected": "90°",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "180°",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "270°",
+            "actual": "MISSING",
+            "labelCorrect": false
+          },
+          {
+            "expected": "360°",
+            "actual": "MISSING",
+            "labelCorrect": false
+          }
+        ]
+      },
+      "topicScore": {
+        "topicMatch": true,
+        "expectedTopic": "matematik",
+        "actualTopic": "matematik"
+      },
+      "answerScore": {
+        "exactMatch": true,
+        "labelMatch": true,
+        "correctAnswer": "B",
+        "givenAnswer": "B) 180°"
+      },
+      "confidenceScore": {
+        "confidenceScore": 0.93,
+        "isWellCalibrated": false,
+        "calibrationError": 0.2300000000000001
+      },
+      "latencyScore": {
+        "extractionLatencyMs": 151,
+        "solvingLatencyMs": 400,
+        "totalLatencyMs": 553,
+        "withinSla": true
+      },
+      "explanationScore": {
+        "hasExplanation": true,
+        "explanationLength": 16,
+        "explanationQualityHint": "minimal"
+      },
+      "passed": true,
+      "passedDimensions": [
+        "ocr",
+        "topic",
+        "answer",
+        "latency",
+        "explanation"
+      ],
+      "failedDimensions": [
+        "options",
+        "confidence"
+      ]
+    }
+  ]
+}

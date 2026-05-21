@@ -1,0 +1,1 @@
+{"version":3,"file":"vision-ocr.engine.d.ts","sourceRoot":"","sources":["../../src/engines/vision-ocr.engine.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,SAAS,EAAE,aAAa,EAAE,MAAM,aAAa,CAAC;AAI5D,qBAAa,eAAgB,YAAW,SAAS;IAC/C,IAAI,SAAY;IAChB,OAAO,CAAC,QAAQ,CAAa;gBAGjB,QAAQ,EAAE,GAAG;IAIzB,WAAW,IAAI,OAAO;IAIhB,OAAO,CAAC,KAAK,EAAE,MAAM,GAAG,MAAM,GAAG,OAAO,CAAC,aAAa,CAAC;CAkB9D"}

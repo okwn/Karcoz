@@ -1,0 +1,132 @@
+# KARÇÖZ — Docker Compose (Production)
+# Usage: docker compose -f infra/docker/docker-compose.prod.yml --env-file .env up -d
+
+name: karcoz
+
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.api
+      args:
+        - NODE_ENV=production
+    container_name: karcoz_api
+    expose:
+      - "8000"
+    environment:
+      - DATABASE_URL=postgresql://karcoz:${DB_PASSWORD}@db:5432/karcoz_db
+      - REDIS_URL=redis://redis:6379/0
+      - NODE_ENV=production
+      - PORT=8000
+      - LOG_LEVEL=info
+      - SESSION_SECRET=${SESSION_SECRET}
+      - MAGIC_LINK_BASE_URL=${MAGIC_LINK_BASE_URL}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+    volumes:
+      - uploads:/app/uploads
+    networks:
+      - karcoz_network
+
+  web:
+    build:
+      context: ../../apps/web-dashboard
+      dockerfile: ../../infra/docker/Dockerfile.web
+      args:
+        - NODE_ENV=production
+    container_name: karcoz_web
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - karcoz_network
+
+  # Worker service removed — apps/worker/ is empty (no background jobs currently required)
+  # Re-add when background job processing is implemented.
+
+  telegram-bot:
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.telegram-bot
+      args:
+        - NODE_ENV=production
+    container_name: karcoz_telegram
+    environment:
+      - DATABASE_URL=postgresql://karcoz:${DB_PASSWORD}@db:5432/karcoz_db
+      - REDIS_URL=redis://redis:6379/0
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - APP_BASE_URL=${APP_BASE_URL}
+      - NODE_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - karcoz_network
+
+  db:
+    image: postgres:16-alpine
+    container_name: karcoz_db
+    environment:
+      POSTGRES_DB: karcoz_db
+      POSTGRES_USER: karcoz
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - karcoz_pgdata:/var/lib/postgresql/data
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U karcoz -d karcoz_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - karcoz_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: karcoz_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - karcoz_redisdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - karcoz_network
+
+volumes:
+  karcoz_pgdata:
+  karcoz_redisdata:
+  uploads:
+
+networks:
+  karcoz_network:
+    driver: bridge

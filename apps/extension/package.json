@@ -1,0 +1,16 @@
+{
+  "name": "@karcoz/extension",
+  "version": "0.1.0",
+  "description": "KARÇÖZ Chrome Extension — AI-powered study assistant",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.42",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0"
+  }
+}

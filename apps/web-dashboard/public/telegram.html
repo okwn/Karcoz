@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram — KARÇÖZ</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .tg-page { max-width: 640px; }
+    .tg-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; }
+    .tg-card__title { font-size: 14px; font-weight: 700; margin: 0 0 16px 0; color: var(--text); }
+    .tg-status { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg); border-radius: var(--radius); margin-bottom: 16px; }
+    .tg-status__icon { font-size: 28px; }
+    .tg-status__info { flex: 1; }
+    .tg-status__label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .tg-status__value { font-size: 11px; color: var(--dim); }
+    .tg-status__badge { font-size: 10px; font-weight: 600; padding: 5px 10px; border-radius: 10px; }
+    .tg-badge--connected { background: var(--accent-dim); color: var(--accent); }
+    .tg-badge--disconnected { background: var(--surface2); color: var(--dim); border: 1px solid var(--border); }
+    .tg-instructions { font-size: 12px; color: var(--dim); line-height: 1.7; margin-bottom: 16px; }
+    .tg-instructions code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; color: var(--accent); font-size: 11px; }
+    .tg-code-display { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; }
+    .tg-code-display code { font-size: 20px; font-weight: 700; letter-spacing: 3px; color: var(--accent); flex: 1; text-align: center; }
+    .tg-code-display button { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 11px; cursor: pointer; }
+    .tg-code-display button:hover { background: var(--border); }
+    .tg-actions { display: flex; gap: 10px; }
+    .tg-plan-quota { margin-top: 20px; }
+    .tg-quota-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .tg-quota-row:last-child { border-bottom: none; }
+    .tg-quota-label { font-size: 12px; color: var(--dim); }
+    .tg-quota-value { font-size: 12px; font-weight: 600; color: var(--text); }
+    .tg-quota-value--accent { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__logo">KARÇÖZ</div>
+    <div class="nav__links">
+      <a href="/dashboard" class="nav__link">Dashboard</a>
+      <a href="/history" class="nav__link">History</a>
+      <a href="/weak-topics" class="nav__link">Weak Topics</a>
+      <a href="/practice" class="nav__link">Practice</a>
+      <a href="/settings" class="nav__link">Settings</a>
+      <a href="/telegram" class="nav__link nav__link--active">Telegram</a>
+      <a href="/billing" class="nav__link">Billing</a>
+    </div>
+  </nav>
+
+  <main class="main tg-page">
+    <header class="page-header">
+      <h1 class="page-title">Telegram Integration</h1>
+      <p class="page-subtitle">Receive answers and notifications via your Telegram bot</p>
+    </header>
+
+    <div id="loading" class="loading"><div class="loading__spinner"></div><span>Loading...</span></div>
+    <div id="error" class="error" style="display:none"><p id="error-msg"></p></div>
+
+    <div id="content" style="display:none">
+
+      <!-- Status Card -->
+      <div class="tg-card">
+        <h3 class="tg-card__title">Connection Status</h3>
+        <div class="tg-status">
+          <span class="tg-status__icon" id="status-icon">—</span>
+          <div class="tg-status__info">
+            <div class="tg-status__label" id="status-label">Loading...</div>
+            <div class="tg-status__value" id="status-value">—</div>
+          </div>
+          <span class="tg-status__badge" id="status-badge">—</span>
+        </div>
+        <div class="tg-actions">
+          <button class="btn btn--primary" id="btn-link" onclick="showLinkCode()">Get Link Code</button>
+          <button class="btn btn--danger" id="btn-unlink" onclick="unlinkAccount()" style="display:none">Unlink Account</button>
+        </div>
+      </div>
+
+      <!-- How It Works Card -->
+      <div class="tg-card">
+        <h3 class="tg-card__title">How It Works</h3>
+        <div class="tg-instructions">
+          <p>1. Open Telegram and search for <strong>@KarcozBot</strong></p>
+          <p>2. Send <code>/start</code> to initialize the bot</p>
+          <p>3. Send <code>/link</code> to get your personal link code</p>
+          <p>4. Enter the code below and click "Connect"</p>
+        </p>
+        </div>
+        <div id="link-code-area" style="display:none">
+          <div class="tg-code-display">
+            <code id="link-code-value">—</code>
+            <button onclick="copyCode()">Copy</button>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="text" class="input" id="confirm-code" placeholder="Enter code from Telegram" style="flex:1">
+            <button class="btn btn--primary" onclick="confirmLink()">Connect</button>
+          </div>
+        </div>
+        <div id="link-success" style="display:none" class="sp-badge sp-badge--ok" style="margin-top:12px">
+          ✓ Telegram account linked successfully
+        </div>
+      </div>
+
+      <!-- Features Card -->
+      <div class="tg-card">
+        <h3 class="tg-card__title">What You Get</h3>
+        <div class="tg-quota-row">
+          <span class="tg-quota-label">Instant answers to questions</span>
+          <span class="tg-quota-value tg-quota-value--accent">✓ Available</span>
+        </div>
+        <div class="tg-quota-row">
+          <span class="tg-quota-label">Daily summary of weak topics</span>
+          <span class="tg-quota-value tg-quota-value--accent">✓ Available</span>
+        </div>
+        <div class="tg-quota-row">
+          <span class="tg-quota-label">Practice reminders</span>
+          <span class="tg-quota-value tg-quota-value--accent">✓ Available</span>
+        </div>
+        <div class="tg-quota-row">
+          <span class="tg-quota-label">/solve — forward any question</span>
+          <span class="tg-quota-value tg-quota-value--accent">✓ Available</span>
+        </div>
+        <div class="tg-quota-row">
+          <span class="tg-quota-label">/history — recent questions</span>
+          <span class="tg-quota-value tg-quota-value--accent">✓ Available</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const API = 'http://localhost:8100/api';
+    let linkCode = '';
+    let currentStatus = {};
+
+    async function init() {
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('content').style.display = 'none';
+
+      try {
+        const sessionRes = await fetch(`${API}/auth/session`, { credentials: 'include' });
+        if (sessionRes.status === 401) { window.location.href = '/login'; return; }
+
+        const statusRes = await fetch(`${API}/telegram/status`, { credentials: 'include' });
+        const statusData = statusRes.ok ? await statusRes.json() : {};
+        currentStatus = statusData;
+
+        updateStatusUI(currentStatus);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error-msg').textContent = err.message;
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    function updateStatusUI(status) {
+      const isLinked = !!status.telegramChatId;
+      const icon = document.getElementById('status-icon');
+      const label = document.getElementById('status-label');
+      const value = document.getElementById('status-value');
+      const badge = document.getElementById('status-badge');
+      const btnLink = document.getElementById('btn-link');
+      const btnUnlink = document.getElementById('btn-unlink');
+
+      if (isLinked) {
+        icon.textContent = '✓';
+        label.textContent = 'Telegram Connected';
+        value.textContent = `Chat ID: ${status.telegramChatId}`;
+        badge.textContent = 'Connected';
+        badge.className = 'tg-status__badge tg-badge--connected';
+        btnLink.style.display = 'none';
+        btnUnlink.style.display = 'inline-block';
+      } else {
+        icon.textContent = '—';
+        label.textContent = 'Telegram Not Connected';
+        value.textContent = 'Link your account to receive answers via Telegram';
+        badge.textContent = 'Disconnected';
+        badge.className = 'tg-status__badge tg-badge--disconnected';
+        btnLink.style.display = 'inline-block';
+        btnUnlink.style.display = 'none';
+      }
+    }
+
+    async function showLinkCode() {
+      // Generate a link code for this user session
+      linkCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      document.getElementById('link-code-value').textContent = linkCode;
+      document.getElementById('link-code-area').style.display = 'block';
+      document.getElementById('confirm-code').value = '';
+      document.getElementById('link-success').style.display = 'none';
+    }
+
+    function copyCode() {
+      const code = document.getElementById('link-code-value').textContent;
+      navigator.clipboard.writeText(code).catch(() => {
+        const el = document.createElement('textarea');
+        el.value = code;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+      });
+    }
+
+    async function confirmLink() {
+      const enteredCode = document.getElementById('confirm-code').value.trim().toUpperCase();
+      if (!enteredCode) { alert('Please enter the code shown in Telegram.'); return; }
+
+      // Use the status endpoint to confirm — the dashboard confirms via the bot flow
+      // Here the user enters their linking code which we send to the backend
+      try {
+        const res = await fetch(`${API}/telegram/link-account`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ linkingCode: enteredCode }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error?.message || 'Link failed');
+        }
+
+        document.getElementById('link-code-area').style.display = 'none';
+        document.getElementById('link-success').style.display = 'block';
+        init(); // reload status
+      } catch (err) {
+        alert('Link failed: ' + err.message + '\n\nMake sure you use the code shown after /link in Telegram.');
+      }
+    }
+
+    async function unlinkAccount() {
+      if (!confirm('Unlink your Telegram account? You can link it again later.')) return;
+
+      try {
+        const res = await fetch(`${API}/telegram/unlink-account`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        init();
+      } catch (err) {
+        alert('Unlink failed: ' + err.message);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

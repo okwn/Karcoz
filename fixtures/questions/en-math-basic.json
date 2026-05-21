@@ -1,0 +1,15 @@
+{
+  "id": "en-math-basic-001",
+  "questionText": "If 3x + 7 = 22, what is the value of x?",
+  "options": [
+    { "label": "A) 3", "value": "3", "order": 0 },
+    { "label": "B) 5", "value": "5", "order": 1 },
+    { "label": "C) 7", "value": "7", "order": 2 },
+    { "label": "D) 15", "value": "15", "order": 3 }
+  ],
+  "correctAnswer": "B) 5",
+  "explanation": "3x + 7 = 22 → 3x = 15 → x = 5",
+  "difficulty": "easy",
+  "topic": "Linear Equations",
+  "language": "en"
+}

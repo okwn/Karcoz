@@ -1,0 +1,11 @@
+{
+  "name": "@karcoz/web-dashboard",
+  "version": "0.1.0",
+  "description": "KARÇÖZ Web Dashboard",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve public -l 3100",
+    "build": "echo 'static files'",
+    "typecheck": "echo 'static shell — no TypeScript'"
+  }
+}

@@ -1,0 +1,16 @@
+# Sample Question Image - Base64 Placeholder
+#
+# This file contains a minimal 1x1 white PNG encoded in base64.
+# Real test images should be actual screenshots or captured question images.
+# To create a test image:
+#   1. Screenshot a question on a website
+#   2. Compress to WebP with quality 0.85
+#   3. Encode as base64
+#   4. Paste below (remove the placeholder)
+#
+# Minimal 1x1 white PNG (10 bytes):
+SAMPLE_BASE64_IMAGE_PLACEHOLDER_DO_NOT_USE=/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICInIx0lGisdHR1i/2wBDAQcHBw0MRLsoHBYgIZCXH6EXpRqn//2wBDAQcGBQ4RFBYYIRwj/2wBDAQcGBgYHBwgIChIqISsfHx8fHxn/2wBDAQcGBgYHBwgIChIqISsfHx8fHxn/2wBDAQcGBgYHBwgIChIqISsfHx8fHxn/2wBDAQgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBn/2wB/z8=
+#
+# For real tests, use actual question screenshots. The API accepts:
+#   - imageBase64: base64-encoded image data (PNG, JPEG, WebP)
+#   - Max size: 10MB (enforced by schema), recommended <2MB for performance
